@@ -93,8 +93,8 @@ function Sidebar({ role }) {
 
 
   return (
-    <aside className="w-64 min-h-screen bg-blue border-r border-gray-200 flex flex-col">
-
+    // <aside className="w-64 min-h-screen bg-blue border-r border-gray-200 flex flex-col">
+<aside className="w-64 min-h-screen bg-blue border-r border-gray-200 flex flex-col shrink-0">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-gray-200">
 
