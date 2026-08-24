@@ -43,7 +43,7 @@ function Reports() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:5000/api/attendance",
+        `${import.meta.env.VITE_API_URL}/attendance`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -73,7 +73,7 @@ function Reports() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:5000/api/employees",
+        `${import.meta.env.VITE_API_URL}/employees`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -100,7 +100,7 @@ function Reports() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:5000/api/departments",
+        `${import.meta.env.VITE_API_URL}/departments`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

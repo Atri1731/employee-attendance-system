@@ -152,7 +152,7 @@ function LeaveManagement() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:5000/api/leaves",
+        `${import.meta.env.VITE_API_URL}/leaves`,
         {
           method: "GET",
           headers: {
@@ -183,7 +183,7 @@ function LeaveManagement() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `http://localhost:5000/api/leaves/${id}/status`,
+        `${import.meta.env.VITE_API_URL}/leaves/${id}/status`,
         {
           method: "PUT",
           headers: {

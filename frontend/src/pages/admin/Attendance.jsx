@@ -60,12 +60,15 @@ function Attendance() {
 
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:5000/api/attendance", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/attendance`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       const data = await response.json();
 
@@ -93,12 +96,15 @@ function Attendance() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:5000/api/employees", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/employees`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       const data = await response.json();
 
@@ -136,7 +142,7 @@ function Attendance() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:5000/api/attendance/absent",
+        `${import.meta.env.VITE_API_URL}/attendance/absent`,
         {
           method: "POST",
 
@@ -286,8 +292,9 @@ function Attendance() {
       ========================= */}
 
       <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">          {/* DATE */}
-
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {" "}
+          {/* DATE */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Date
@@ -300,9 +307,7 @@ function Attendance() {
               className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
           {/* DEPARTMENT */}
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Department
@@ -328,9 +333,7 @@ function Attendance() {
               <option value="Administration">Administration</option>
             </select>
           </div>
-
           {/* STATUS */}
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Status
@@ -352,9 +355,7 @@ function Attendance() {
               <option value="leave">Leave</option>
             </select>
           </div>
-
           {/* SEARCH */}
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Search Employee
@@ -378,21 +379,20 @@ function Attendance() {
         </div>
       </div>
 
-
-<div className="flex items-end">
-  <button
-    type="button"
-    onClick={() => {
-      setDateFilter("");
-      setDepartmentFilter("");
-      setStatusFilter("");
-      setSearch("");
-    }}
-    className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition"
-  >
-    Clear Filters
-  </button>
-</div>
+      <div className="flex items-end">
+        <button
+          type="button"
+          onClick={() => {
+            setDateFilter("");
+            setDepartmentFilter("");
+            setStatusFilter("");
+            setSearch("");
+          }}
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition"
+        >
+          Clear Filters
+        </button>
+      </div>
       {/* =========================
           ATTENDANCE TABLE
       ========================= */}

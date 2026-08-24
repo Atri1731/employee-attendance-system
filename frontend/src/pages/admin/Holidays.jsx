@@ -36,7 +36,7 @@ function Holidays() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:5000/api/holidays",
+        `${import.meta.env.VITE_API_URL}/holidays`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -91,7 +91,7 @@ function Holidays() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:5000/api/holidays",
+        `${import.meta.env.VITE_API_URL}/holidays`,
         {
           method: "POST",
           headers: {
@@ -160,7 +160,7 @@ function Holidays() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `http://localhost:5000/api/holidays/${editingHoliday._id}`,
+        `${import.meta.env.VITE_API_URL}/holidays/${editingHoliday._id}`,
         {
           method: "PUT",
           headers: {
@@ -220,7 +220,7 @@ function Holidays() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `http://localhost:5000/api/holidays/${id}`,
+        `${import.meta.env.VITE_API_URL}/holidays/${id}`,
         {
           method: "DELETE",
           headers: {

@@ -231,8 +231,8 @@ function Profile() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch(
-        "http://localhost:5000/api/employees/me",
+const response = await fetch(
+  `${import.meta.env.VITE_API_URL}/employees/me`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -291,22 +291,21 @@ function Profile() {
 
       const token = localStorage.getItem("token");
 
-      const response = await fetch(
-        "http://localhost:5000/api/employees/me",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-          }),
-        }
-      );
-
+    const response = await fetch(
+  `${import.meta.env.VITE_API_URL}/employees/me`,
+  {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+    }),
+  }
+);
       const data = await response.json();
 
       if (!response.ok) {

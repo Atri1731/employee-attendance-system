@@ -33,22 +33,6 @@ function Login() {
     }));
   }
 
-  // function handleSubmit(e) {
-  //   e.preventDefault();
-
-  //   console.log({
-  //     role,
-  //     ...formData,
-  //   });
-
-  //   // Temporary frontend navigation.
-  //   // Backend authentication will be added later.
-  //   if (role === "admin") {
-  //     navigate("/admin/dashboard");
-  //   } else {
-  //     navigate("/employee/dashboard");
-  //   }
-  // }
 
   async function handleSubmit(e) {
     e.preventDefault();

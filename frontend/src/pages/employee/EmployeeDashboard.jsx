@@ -30,7 +30,7 @@ function EmployeeDashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:5000/api/attendance/my", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/attendance/my`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -81,7 +81,7 @@ function EmployeeDashboard() {
         try {
           const token = localStorage.getItem("token");
 
-          const response = await fetch("http://localhost:5000/api/leaves/my", {
+          const response = await fetch(`${import.meta.env.VITE_API_URL}/leaves/my`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -160,7 +160,7 @@ function EmployeeDashboard() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:5000/api/attendance/check-in",
+       `${import.meta.env.VITE_API_URL}/attendance/check-in`,
         {
           method: "POST",
           headers: {
@@ -194,7 +194,7 @@ function EmployeeDashboard() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:5000/api/attendance/check-out",
+        `${import.meta.env.VITE_API_URL}/attendance/check-out`,
         {
           method: "PUT",
           headers: {

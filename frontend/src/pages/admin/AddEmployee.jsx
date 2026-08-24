@@ -182,7 +182,7 @@
 
 // export default AddEmployee;
 
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 
 function AddEmployee() {
   const [formData, setFormData] = useState({
@@ -198,52 +198,47 @@ function AddEmployee() {
 
   const [loading, setLoading] = useState(false);
 
-const [departments, setDepartments] = useState([]);
-const [departmentLoading, setDepartmentLoading] = useState(true);
+  const [departments, setDepartments] = useState([]);
+  const [departmentLoading, setDepartmentLoading] = useState(true);
 
-useEffect(() => {
-  fetchDepartments();
-}, []);
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
 
-const fetchDepartments = async () => {
-  try {
-    const token = localStorage.getItem("token");
+  const fetchDepartments = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-    const response = await fetch(
-      "http://localhost:5000/api/departments",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/departments`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        data.message || "Failed to fetch departments"
       );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch departments");
+      }
+
+      // Only show active departments
+      const activeDepartments = (data.departments || []).filter(
+        (department) => department.status === "active",
+      );
+
+      setDepartments(activeDepartments);
+    } catch (error) {
+      console.error("Fetch departments error:", error);
+    } finally {
+      setDepartmentLoading(false);
     }
-
-    // Only show active departments
-    const activeDepartments = (data.departments || []).filter(
-      (department) => department.status === "active"
-    );
-
-    setDepartments(activeDepartments);
-  } catch (error) {
-    console.error(
-      "Fetch departments error:",
-      error
-    );
-  } finally {
-    setDepartmentLoading(false);
-  }
-};
+  };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const {name, value} = e.target;
 
     setFormData((prev) => ({
       ...prev,
@@ -260,7 +255,7 @@ const fetchDepartments = async () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:5000/api/employees",
+        `${import.meta.env.VITE_API_URL}/employees`,
         {
           method: "POST",
           headers: {
@@ -268,15 +263,13 @@ const fetchDepartments = async () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(formData),
-        }
+        },
       );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to add employee"
-        );
+        throw new Error(data.message || "Failed to add employee");
       }
 
       alert("Employee added successfully!");
@@ -303,12 +296,9 @@ const fetchDepartments = async () => {
 
   return (
     <div className="p-6 min-h-screen bg-blue-100">
-
       {/* Page Header */}
       <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Add Employee
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-800">Add Employee</h1>
 
         <p className="text-gray-500 mt-1">
           Add a new employee to the organization.
@@ -317,11 +307,8 @@ const fetchDepartments = async () => {
 
       {/* Form */}
       <div className="bg-white border border-gray-200 rounded-xl p-6 max-w-4xl mx-auto">
-
         <form onSubmit={handleSubmit}>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
             {/* Employee ID */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -412,29 +399,26 @@ const fetchDepartments = async () => {
                 Department
               </label>
 
-  <select
-  name="department"
-  value={formData.department}
-  onChange={handleChange}
-  required
-  disabled={departmentLoading}
-  className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
->
-  <option value="">
-    {departmentLoading
-      ? "Loading departments..."
-      : "Select department"}
-  </option>
+              <select
+                name="department"
+                value={formData.department}
+                onChange={handleChange}
+                required
+                disabled={departmentLoading}
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+              >
+                <option value="">
+                  {departmentLoading
+                    ? "Loading departments..."
+                    : "Select department"}
+                </option>
 
-  {departments.map((department) => (
-    <option
-      key={department._id}
-      value={department.name}
-    >
-      {department.name}
-    </option>
-  ))}
-</select>
+                {departments.map((department) => (
+                  <option key={department._id} value={department.name}>
+                    {department.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Designation */}
@@ -469,19 +453,15 @@ const fetchDepartments = async () => {
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-
           </div>
 
           {/* Buttons */}
           <div className="flex gap-3 mt-8">
-
             <button
               type="submit"
               disabled={loading}
               className={`bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition ${
-                loading
-                  ? "opacity-60 cursor-not-allowed"
-                  : ""
+                loading ? "opacity-60 cursor-not-allowed" : ""
               }`}
             >
               {loading ? "Adding..." : "Add Employee"}
@@ -505,13 +485,9 @@ const fetchDepartments = async () => {
             >
               Clear
             </button>
-
           </div>
-
         </form>
-
       </div>
-
     </div>
   );
 }

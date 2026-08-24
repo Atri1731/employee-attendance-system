@@ -202,7 +202,7 @@ function MyAttendance() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:5000/api/attendance/my",
+        `${import.meta.env.VITE_API_URL}/attendance/my`,
         {
           method: "GET",
           headers: {

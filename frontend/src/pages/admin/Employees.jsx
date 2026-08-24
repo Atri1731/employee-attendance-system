@@ -20,7 +20,9 @@ const [statusFilter, setStatusFilter] = useState("");
 
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:5000/api/departments", {
+      const response = await fetch(
+  `${import.meta.env.VITE_API_URL}/departments`,
+  {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -57,7 +59,9 @@ const [statusFilter, setStatusFilter] = useState("");
 
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:5000/api/employees", {
+     const response = await fetch(
+  `${import.meta.env.VITE_API_URL}/employees`,
+  {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -142,7 +146,7 @@ const [statusFilter, setStatusFilter] = useState("");
       // console.log("TOKEN:", token);
       // console.log("EMPLOYEE:", editingEmployee);
 
-      const url = `http://localhost:5000/api/employees/${editingEmployee._id}`;
+      const url = `${import.meta.env.VITE_API_URL}/employees/${editingEmployee._id}`;
 
       // console.log("UPDATE URL:", url);
 
@@ -216,10 +220,11 @@ const [statusFilter, setStatusFilter] = useState("");
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `http://localhost:5000/api/employees/${employeeId}`,
+      `${import.meta.env.VITE_API_URL}/employees/${employeeId}`,
         {
           method: "DELETE",
 
+          
           headers: {
             Authorization: `Bearer ${token}`,
           },
