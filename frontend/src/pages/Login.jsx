@@ -357,16 +357,18 @@ function Login() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-3 sm:p-4">
 
       <div className="w-full max-w-5xl bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200">
-<div className="flex">
+<div className="flex flex-col md:flex-row">
 
           {/* Left Image */}
-          <div className="hidden md:flex md:w-1/2 bg-blue-50 items-center justify-center overflow-hidden">
-  <img
-    src="/attendance-login.png"
-    alt="Attendance Management System"
-    className="w-full h-auto object-contain"
-  />
-</div>
+  <div className="w-full md:w-1/2 bg-blue-50 flex items-center justify-center overflow-hidden">
+    <img
+      src="/attendance-login.png"
+      alt="Attendance Management System"
+      className="w-full h-auto object-contain"
+    />
+  </div>
+
+
 
           {/* Right Login Section */}
           <div className="w-full md:w-1/2 flex items-center justify-center px-5 py-8 sm:p-8 md:p-12">
