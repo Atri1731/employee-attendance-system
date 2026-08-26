@@ -26,6 +26,7 @@ import MyAttendance from "./pages/employee/MyAttendance";
 import ApplyLeave from "./pages/employee/ApplyLeave";
 import MyLeaves from "./pages/employee/MyLeaves";
 import Profile from "./pages/employee/Profile";
+import EmployeeHolidays from "./pages/employee/Holidays";
 
 function App() {
   return (
@@ -54,7 +55,7 @@ function App() {
 
           <Route path="departments" element={<Departments />} />
 
-          <Route path="holidays" element={<Holidays />} />
+          <Route path="/admin/holidays" element={<Holidays />} />
         </Route>
 
         {/* ================= EMPLOYEE ================= */}
@@ -67,6 +68,7 @@ function App() {
           <Route path="leave/apply" element={<ApplyLeave />} />
 
           <Route path="myleaves" element={<MyLeaves />} />
+          <Route path="/employee/holidays" element={<EmployeeHolidays/>} />
 
           <Route path="profile" element={<Profile />} />
         </Route>

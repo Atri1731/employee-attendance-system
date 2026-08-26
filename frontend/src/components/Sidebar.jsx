@@ -81,6 +81,12 @@ function Sidebar({ role }) {
       path: "/employee/myleaves",
       icon: FileText,
     },
+      {
+    name: "Holidays",
+    path: "/employee/holidays",
+    icon: Calendar,
+  },
+
     {
       name: "Profile",
       path: "/employee/profile",
