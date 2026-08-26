@@ -50,7 +50,7 @@ function AdminLayout() {
 
         {/* Mobile Sidebar Overlay */}
         {sidebarOpen && (
-          <div className="fixed inset-0 z-50 md:hidden">
+          <div className="fixed inset-0 z-50 md:hidden md:ml-64">
 
             {/* Dark background */}
             <div
@@ -75,7 +75,7 @@ function AdminLayout() {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 min-w-0 w-full overflow-x-hidden">
+        <main className="flex-1 min-w-0 w-full overflow-x-hidden md:ml-64">
           <Outlet />
         </main>
 

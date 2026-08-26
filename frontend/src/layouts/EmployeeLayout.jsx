@@ -75,7 +75,7 @@ function EmployeeLayout() {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 min-w-0 w-full overflow-x-hidden">
+        <main className="flex-1 min-w-0 w-full overflow-x-hidden  md:ml-64">
           <Outlet />
         </main>
 

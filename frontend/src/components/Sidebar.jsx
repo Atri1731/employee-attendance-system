@@ -10,17 +10,17 @@ import {
   LogOut,
 } from "lucide-react";
 
-import { NavLink, useNavigate } from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 
-function Sidebar({ role }) {
-    const navigate = useNavigate();
-    
-    const handleLogout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
+function Sidebar({role}) {
+  const navigate = useNavigate();
 
-  navigate("/login");
-};
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    navigate("/login");
+  };
   const adminMenu = [
     {
       name: "Dashboard",
@@ -59,7 +59,6 @@ function Sidebar({ role }) {
     },
   ];
 
-
   const employeeMenu = [
     {
       name: "Dashboard",
@@ -81,11 +80,11 @@ function Sidebar({ role }) {
       path: "/employee/myleaves",
       icon: FileText,
     },
-      {
-    name: "Holidays",
-    path: "/employee/holidays",
-    icon: Calendar,
-  },
+    {
+      name: "Holidays",
+      path: "/employee/holidays",
+      icon: Calendar,
+    },
 
     {
       name: "Profile",
@@ -94,39 +93,28 @@ function Sidebar({ role }) {
     },
   ];
 
-
   const menu = role === "admin" ? adminMenu : employeeMenu;
 
-
   return (
-    // <aside className="w-64 min-h-screen bg-blue border-r border-gray-200 flex flex-col">
-<aside className="w-64 min-h-screen bg-blue border-r border-gray-200 flex flex-col shrink-0">
+    // <aside className="w-64 fixed min-h-screen bg-blue border-r border-gray-200 flex flex-col">
+    <aside className="w-64 h-screen fixed left-0 top-0 bg-blue border-r border-gray-200 flex flex-col shrink-0 z-50">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-gray-200">
+        <h1 className="text-xl font-bold text-blue-600">Employee Attendance</h1>
 
-        <h1 className="text-xl font-bold text-blue-600">
-          Employee Attendance
-        </h1>
-
-        <p className="text-sm text-gray-500 mt-1 capitalize">
-          {role} Panel
-        </p>
-
+        <p className="text-sm text-gray-500 mt-1 capitalize">{role} Panel</p>
       </div>
-
 
       {/* Menu */}
       <nav className="flex-1 p-4">
-
         {menu.map((item) => {
-
           const Icon = item.icon;
 
           return (
             <NavLink
               key={item.path}
               to={item.path}
-              className={({ isActive }) =>
+              className={({isActive}) =>
                 `flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition ${
                   isActive
                     ? "bg-blue-50 text-blue-600 font-semibold"
@@ -134,35 +122,25 @@ function Sidebar({ role }) {
                 }`
               }
             >
-
               <Icon size={20} />
 
               <span>{item.name}</span>
-
             </NavLink>
           );
-
         })}
-
       </nav>
-
 
       {/* Logout */}
       <div className="p-4 border-t border-gray-200">
-
-       <button
-  onClick={handleLogout}
-  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-600 transition"
->
-
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-600 transition"
+        >
           <LogOut size={20} />
 
           <span>Logout</span>
-
         </button>
-
       </div>
-
     </aside>
   );
 }
