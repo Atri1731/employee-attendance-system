@@ -1,13 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  CalendarDays,
+  X,
+  PartyPopper,
+} from "lucide-react";
 
 function Holidays() {
   const [holidays, setHolidays] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [currentDate, setCurrentDate] = useState(
-    new Date()
-  );
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  // Selected holiday for popup
+  const [selectedHoliday, setSelectedHoliday] = useState(null);
 
   // =========================
   // FETCH HOLIDAYS
@@ -33,27 +40,16 @@ function Holidays() {
       );
 
       const data = await response.json();
+
       console.log("HOLIDAY API RESPONSE:", data);
 
       if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to fetch holidays"
-        );
+        throw new Error(data.message || "Failed to fetch holidays");
       }
 
-      // Only show active holidays
-      const activeHolidays = (
-        data.holidays || []
-      ).filter(
-        (holiday) => holiday.status === "active"
-      );
-
-      setHolidays(activeHolidays);
+      setHolidays(data.holidays || []);
     } catch (error) {
-      console.error(
-        "Fetch holidays error:",
-        error
-      );
+      console.error("Fetch holidays error:", error);
     } finally {
       setLoading(false);
     }
@@ -66,30 +62,19 @@ function Holidays() {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
-  const monthName = currentDate.toLocaleDateString(
-    "en-US",
-    {
-      month: "long",
-      year: "numeric",
-    }
-  );
+  const monthName = currentDate.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
 
   // =========================
   // CALENDAR DAYS
   // =========================
 
   const calendarDays = useMemo(() => {
-    const firstDay = new Date(
-      year,
-      month,
-      1
-    ).getDay();
+    const firstDay = new Date(year, month, 1).getDay();
 
-    const daysInMonth = new Date(
-      year,
-      month + 1,
-      0
-    ).getDate();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     const days = [];
 
@@ -113,25 +98,19 @@ function Holidays() {
   const getHolidayDate = (holiday) => {
     if (!holiday.date) return "";
 
-    return new Date(
-      holiday.date
-    ).toLocaleDateString("en-CA");
+    return new Date(holiday.date).toLocaleDateString("en-CA");
   };
 
   const getDayHoliday = (day) => {
     if (!day) return null;
 
-    const calendarDate = `${year}-${String(
-      month + 1
-    ).padStart(2, "0")}-${String(day).padStart(
+    const calendarDate = `${year}-${String(month + 1).padStart(
       2,
       "0"
-    )}`;
+    )}-${String(day).padStart(2, "0")}`;
 
     return holidays.find(
-      (holiday) =>
-        getHolidayDate(holiday) ===
-        calendarDate
+      (holiday) => getHolidayDate(holiday) === calendarDate
     );
   };
 
@@ -140,15 +119,11 @@ function Holidays() {
   // =========================
 
   const previousMonth = () => {
-    setCurrentDate(
-      new Date(year, month - 1, 1)
-    );
+    setCurrentDate(new Date(year, month - 1, 1));
   };
 
   const nextMonth = () => {
-    setCurrentDate(
-      new Date(year, month + 1, 1)
-    );
+    setCurrentDate(new Date(year, month + 1, 1));
   };
 
   const goToToday = () => {
@@ -160,17 +135,21 @@ function Holidays() {
   // =========================
 
   const upcomingHolidays = [...holidays]
-    .filter(
-      (holiday) =>
-        new Date(holiday.date) >=
-        new Date()
-    )
-    .sort(
-      (a, b) =>
-        new Date(a.date) -
-        new Date(b.date)
-    )
+    .filter((holiday) => new Date(holiday.date) >= new Date())
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
     .slice(0, 5);
+
+  // =========================
+  // FORMAT HOLIDAY DATE
+  // =========================
+
+  const formatHolidayDate = (date) => {
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  };
 
   // =========================
   // UI
@@ -178,38 +157,36 @@ function Holidays() {
 
   return (
     <div className="p-4 sm:p-6 bg-blue-100 min-h-screen">
-
       {/* Header */}
       <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-gray-800">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
           Holiday Calendar
         </h1>
 
-        <p className="text-gray-500 mt-1">
+        <p className="text-sm sm:text-base text-gray-500 mt-1">
           View all upcoming organization holidays.
         </p>
       </div>
 
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* =========================
+            CALENDAR
+        ========================= */}
 
-        {/* Calendar */}
         <div className="lg:col-span-2 bg-white border border-gray-200 rounded-xl p-4 sm:p-6">
-
           {/* Calendar Header */}
           <div className="flex items-center justify-between mb-6">
-
             <button
               type="button"
               onClick={previousMonth}
-              className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition"
+              className="p-2 sm:p-2.5 rounded-lg border border-gray-200 hover:bg-gray-50 transition"
             >
               <ChevronLeft size={20} />
             </button>
 
             <div className="text-center">
-
-              <h2 className="text-xl font-bold text-gray-800">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-800">
                 {monthName}
               </h2>
 
@@ -220,39 +197,29 @@ function Holidays() {
               >
                 Today
               </button>
-
             </div>
 
             <button
               type="button"
               onClick={nextMonth}
-              className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition"
+              className="p-2 sm:p-2.5 rounded-lg border border-gray-200 hover:bg-gray-50 transition"
             >
               <ChevronRight size={20} />
             </button>
-
           </div>
 
           {/* Week Days */}
           <div className="grid grid-cols-7 border-b border-gray-200">
-
-            {[
-              "Sun",
-              "Mon",
-              "Tue",
-              "Wed",
-              "Thu",
-              "Fri",
-              "Sat",
-            ].map((day) => (
-              <div
-                key={day}
-                className="text-center text-xs sm:text-sm font-semibold text-gray-500 py-3"
-              >
-                {day}
-              </div>
-            ))}
-
+            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+              (day) => (
+                <div
+                  key={day}
+                  className="text-center text-xs sm:text-sm font-semibold text-gray-500 py-3"
+                >
+                  {day}
+                </div>
+              )
+            )}
           </div>
 
           {/* Calendar */}
@@ -262,96 +229,114 @@ function Holidays() {
             </div>
           ) : (
             <div className="grid grid-cols-7">
+              {calendarDays.map((day, index) => {
+                const holiday = getDayHoliday(day);
 
-              {calendarDays.map(
-                (day, index) => {
-                  const holiday =
-                    getDayHoliday(day);
+                const today = new Date();
 
-                  const isToday =
-                    day &&
-                    new Date().getDate() ===
-                      day &&
-                    new Date().getMonth() ===
-                      month &&
-                    new Date().getFullYear() ===
-                      year;
+                const isToday =
+                  day &&
+                  today.getDate() === day &&
+                  today.getMonth() === month &&
+                  today.getFullYear() === year;
 
-                  return (
-                    <div
-                      key={index}
-                      className={`min-h-[75px] sm:min-h-[95px] border-b border-r border-gray-100 p-1.5 sm:p-2 ${
-                        !day
-                          ? "bg-gray-50"
-                          : "bg-white"
-                      }`}
-                    >
-
-                      {day && (
-                        <div className="h-full">
-
-                          {/* Day Number */}
-                          <div
-                            className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs sm:text-sm font-medium ${
-                              isToday
-                                ? "bg-blue-600 text-white"
-                                : "text-gray-700"
-                            }`}
-                          >
-                            {day}
-                          </div>
-
-                          {/* Holiday */}
-                          {holiday && (
-                            <div className="mt-1">
-
-                              <div className="bg-blue-50 border border-blue-200 rounded-md px-1.5 py-1">
-
-                                <p className="text-[10px] sm:text-xs font-semibold text-blue-700 truncate">
-                                  {
-                                    holiday.name
-                                  }
-                                </p>
-
-                              </div>
-
-                            </div>
-                          )}
-
+                return (
+                  <div
+                    key={index}
+                    className={`relative min-h-[75px] sm:min-h-[100px] border-b border-r border-gray-100 p-1.5 sm:p-2 ${
+                      !day ? "bg-gray-50" : "bg-white"
+                    }`}
+                  >
+                    {day && (
+                      <div className="h-full">
+                        {/* Day Number */}
+                        <div
+                          className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs sm:text-sm font-medium ${
+                            isToday
+                              ? "bg-blue-600 text-white"
+                              : holiday
+                              ? "text-blue-700 font-bold"
+                              : "text-gray-700"
+                          }`}
+                        >
+                          {day}
                         </div>
-                      )}
 
-                    </div>
-                  );
-                }
-              )}
+                        {/* =========================
+                            HOLIDAY
+                        ========================= */}
 
+                        {holiday && (
+                          <div className="relative mt-2 group">
+                            {/* Holiday Button */}
+                            <button
+                              type="button"
+                              onClick={() => setSelectedHoliday(holiday)}
+                              className="w-full text-left focus:outline-none"
+                            >
+                              <div className="flex items-center gap-1.5 bg-blue-50 border border-blue-200 rounded-md px-1.5 sm:px-2 py-1.5 hover:bg-blue-100 hover:border-blue-400 transition cursor-pointer">
+                                <span className="text-xs">🎉</span>
+
+                                <span className="hidden sm:block text-xs font-semibold text-blue-700 truncate">
+                                  {holiday.name}
+                                </span>
+
+                                <span className="sm:hidden text-xs font-semibold text-blue-700">
+                                  Holiday
+                                </span>
+                              </div>
+                            </button>
+
+                            {/* =========================
+                                HOVER TOOLTIP
+                            ========================= */}
+
+                            <div className="absolute z-30 left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 sm:w-56">
+                              <div className="bg-gray-900 text-white rounded-lg shadow-xl p-3">
+                                <div className="flex items-start gap-2">
+                                  <span className="text-base">🎉</span>
+
+                                  <div className="min-w-0">
+                                    <p className="text-xs sm:text-sm font-semibold break-words">
+                                      {holiday.name}
+                                    </p>
+
+                                    <p className="text-[10px] sm:text-xs text-gray-300 mt-1">
+                                      {formatHolidayDate(holiday.date)}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                {/* Small arrow */}
+                                <div className="absolute left-1/2 -translate-x-1/2 top-full border-8 border-transparent border-t-gray-900" />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
 
           {/* Legend */}
           <div className="flex items-center gap-2 mt-5 text-sm text-gray-500">
-
             <span className="w-3 h-3 rounded bg-blue-100 border border-blue-200"></span>
 
-            <span>
-              Organization Holiday
-            </span>
-
+            <span>Organization Holiday</span>
           </div>
-
         </div>
 
-        {/* Upcoming Holidays */}
+        {/* =========================
+            UPCOMING HOLIDAYS
+        ========================= */}
+
         <div className="bg-white border border-gray-200 rounded-xl p-5 h-fit">
-
           <div className="flex items-center gap-3 mb-5">
-
             <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-              <CalendarDays
-                size={22}
-                className="text-blue-600"
-              />
+              <CalendarDays size={22} className="text-blue-600" />
             </div>
 
             <div>
@@ -363,17 +348,12 @@ function Holidays() {
                 Next holidays
               </p>
             </div>
-
           </div>
 
           {loading ? (
-            <p className="text-sm text-gray-500">
-              Loading...
-            </p>
-          ) : upcomingHolidays.length ===
-            0 ? (
+            <p className="text-sm text-gray-500">Loading...</p>
+          ) : upcomingHolidays.length === 0 ? (
             <div className="text-center py-8">
-
               <CalendarDays
                 size={35}
                 className="mx-auto text-gray-300"
@@ -382,66 +362,140 @@ function Holidays() {
               <p className="text-sm text-gray-400 mt-3">
                 No upcoming holidays
               </p>
-
             </div>
           ) : (
             <div className="space-y-3">
+              {upcomingHolidays.map((holiday) => (
+                <button
+                  type="button"
+                  key={holiday._id}
+                  onClick={() => setSelectedHoliday(holiday)}
+                  className="w-full text-left border border-gray-200 rounded-lg p-3 hover:bg-blue-50 hover:border-blue-300 transition"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-semibold text-gray-800 truncate">
+                        {holiday.name}
+                      </p>
 
-              {upcomingHolidays.map(
-                (holiday) => (
-                  <div
-                    key={holiday._id}
-                    className="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition"
-                  >
-
-                    <div className="flex items-start justify-between gap-3">
-
-                      <div className="min-w-0">
-
-                        <p className="font-semibold text-gray-800 truncate">
-                          {holiday.name}
-                        </p>
-
-                        <p className="text-xs text-gray-500 mt-1">
-                          {new Date(
-                            holiday.date
-                          ).toLocaleDateString(
-                            "en-IN",
-                            {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                            }
-                          )}
-                        </p>
-
-                        {holiday.description && (
-                          <p className="text-xs text-gray-400 mt-2 line-clamp-2">
-                            {
-                              holiday.description
-                            }
-                          </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {new Date(holiday.date).toLocaleDateString(
+                          "en-IN",
+                          {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          }
                         )}
+                      </p>
 
-                      </div>
-
-                      <span className="shrink-0 text-xs font-medium bg-blue-50 text-blue-600 px-2 py-1 rounded-full">
-                        Holiday
-                      </span>
-
+                      {holiday.description && (
+                        <p className="text-xs text-gray-400 mt-2 line-clamp-2">
+                          {holiday.description}
+                        </p>
+                      )}
                     </div>
 
+                    <span className="shrink-0 text-xs font-medium bg-blue-50 text-blue-600 px-2 py-1 rounded-full">
+                      Holiday
+                    </span>
                   </div>
-                )
-              )}
-
+                </button>
+              ))}
             </div>
           )}
-
         </div>
-
       </div>
 
+      {/* =========================
+          HOLIDAY DETAILS MODAL
+      ========================= */}
+
+      {selectedHoliday && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          onClick={() => setSelectedHoliday(null)}
+        >
+          <div
+            className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-5 sm:p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <PartyPopper
+                    size={23}
+                    className="text-blue-600"
+                  />
+                </div>
+
+                <div>
+                  <p className="text-xs font-medium text-blue-600">
+                    Organization Holiday
+                  </p>
+
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-800 mt-0.5">
+                    {selectedHoliday.name}
+                  </h2>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedHoliday(null)}
+                className="p-2 rounded-lg hover:bg-gray-100 transition"
+              >
+                <X size={20} className="text-gray-500" />
+              </button>
+            </div>
+
+            {/* Date */}
+            <div className="mt-6 bg-blue-50 border border-blue-100 rounded-xl p-4">
+              <div className="flex items-center gap-3">
+                <CalendarDays
+                  size={21}
+                  className="text-blue-600"
+                />
+
+                <div>
+                  <p className="text-xs text-gray-500">
+                    Holiday Date
+                  </p>
+
+                  <p className="font-semibold text-gray-800 mt-0.5">
+                    {formatHolidayDate(selectedHoliday.date)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Description */}
+            {selectedHoliday.description && (
+              <div className="mt-4">
+                <p className="text-sm font-semibold text-gray-700 mb-2">
+                  Description
+                </p>
+
+                <div className="border border-gray-200 rounded-xl p-4">
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    {selectedHoliday.description}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Close */}
+            <button
+              type="button"
+              onClick={() => setSelectedHoliday(null)}
+              className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
