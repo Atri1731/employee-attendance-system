@@ -259,49 +259,58 @@ function Holidays() {
                             HOLIDAY
                         ========================= */}
 
-                        {holiday && (
-                          <div className="relative mt-2 group w-full flex justify-center">
-                            <button
-                              type="button"
-                              onClick={() => setSelectedHoliday(holiday)}
-                              title={holiday.name}
-                              className={`w-9 h-9 sm:w-full sm:h-auto flex items-center justify-center sm:justify-start gap-1 rounded-md border transition overflow-hidden ${
-                                holiday.status === "active"
-                                  ? "bg-blue-50 border-blue-200 hover:bg-blue-100 hover:border-blue-400"
-                                  : "bg-gray-50 border-gray-200 hover:bg-gray-100"
-                              }`}
-                            >
-                              {/* Mobile */}
-                              <span className="text-base sm:hidden">🎉</span>
+                       {holiday && (
+  <div className="relative mt-2 group w-full flex justify-center">
+    
+    {/* MOBILE - ICON ONLY */}
+    <button
+      type="button"
+      onClick={() => setSelectedHoliday(holiday)}
+      title={holiday.name}
+      className="flex sm:hidden items-center justify-center w-9 h-9 rounded-md border border-blue-200 bg-blue-50 hover:bg-blue-100 transition"
+    >
+      <span className="text-base">🎉</span>
+    </button>
 
-                              {/* Desktop */}
-                              <span className="hidden sm:block text-xs font-semibold text-blue-700 truncate min-w-0 px-1.5 py-1.5">
-                                🎉 {holiday.name}
-                              </span>
-                            </button>
+    {/* DESKTOP - NAME */}
+    <button
+      type="button"
+      onClick={() => setSelectedHoliday(holiday)}
+      title={holiday.name}
+      className="hidden sm:flex w-full items-center gap-1 rounded-md border border-blue-200 bg-blue-50 hover:bg-blue-100 transition overflow-hidden px-1.5 py-1.5"
+    >
+      <span className="text-xs flex-shrink-0">
+        🎉
+      </span>
 
-                            {/* Desktop hover tooltip */}
-                            <div className="absolute z-30 left-1/2 -translate-x-1/2 bottom-full mb-2 hidden sm:group-hover:block w-52">
-                              <div className="bg-gray-900 text-white rounded-lg shadow-xl p-3">
-                                <div className="flex items-start gap-2">
-                                  <span>🎉</span>
+      <span className="text-xs font-semibold text-blue-700 truncate min-w-0">
+        {holiday.name}
+      </span>
+    </button>
 
-                                  <div className="min-w-0">
-                                    <p className="text-sm font-semibold break-words">
-                                      {holiday.name}
-                                    </p>
+    {/* DESKTOP HOVER TOOLTIP */}
+    <div className="absolute z-30 left-1/2 -translate-x-1/2 bottom-full mb-2 hidden sm:group-hover:block w-52">
+      <div className="bg-gray-900 text-white rounded-lg shadow-xl p-3">
+        <div className="flex items-start gap-2">
+          <span>🎉</span>
 
-                                    <p className="text-xs text-gray-300 mt-1">
-                                      {formatHolidayDate(holiday.date)}
-                                    </p>
-                                  </div>
-                                </div>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold break-words">
+              {holiday.name}
+            </p>
 
-                                <div className="absolute left-1/2 -translate-x-1/2 top-full border-8 border-transparent border-t-gray-900" />
-                              </div>
-                            </div>
-                          </div>
-                        )}
+            <p className="text-xs text-gray-300 mt-1">
+              {formatHolidayDate(holiday.date)}
+            </p>
+          </div>
+        </div>
+
+        <div className="absolute left-1/2 -translate-x-1/2 top-full border-8 border-transparent border-t-gray-900" />
+      </div>
+    </div>
+
+  </div>
+)}
                       </div>
                     )}
                   </div>
