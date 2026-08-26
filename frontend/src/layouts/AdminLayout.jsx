@@ -25,7 +25,7 @@ function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-blue-100">
+    <div className="min-h-screen bg-gray-100">
 
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between bg-white px-4 py-3 border-b border-gray-200 sticky top-0 z-40">
@@ -50,7 +50,7 @@ function AdminLayout() {
 
         {/* Mobile Sidebar Overlay */}
         {sidebarOpen && (
-          <div className="fixed inset-0 z-50 md:hidden md:ml-64">
+          <div className="fixed inset-0 z-50 md:hidden">
 
             {/* Dark background */}
             <div
