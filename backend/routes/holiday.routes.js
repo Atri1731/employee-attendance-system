@@ -13,14 +13,15 @@ const {
 } = require("../controllers/holiday.controller");
 
 // Get all holidays
+// Admin + Employee can view holidays
 router.get(
   "/",
   protect,
-  authorize("admin"),
+  authorize("admin", "employee"),
   getAllHolidays
 );
 
-// Create holiday
+// Create holiday - Admin only
 router.post(
   "/",
   protect,
@@ -28,7 +29,7 @@ router.post(
   createHoliday
 );
 
-// Update holiday
+// Update holiday - Admin only
 router.put(
   "/:id",
   protect,
@@ -36,7 +37,7 @@ router.put(
   updateHoliday
 );
 
-// Delete holiday
+// Delete holiday - Admin only
 router.delete(
   "/:id",
   protect,
