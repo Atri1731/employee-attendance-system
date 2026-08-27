@@ -244,59 +244,56 @@ function AdminDashboard() {
   ];
 
   // =========================
-// EMPLOYEES FOR STAT CARD
-// =========================
+  // EMPLOYEES FOR STAT CARD
+  // =========================
 
-const getEmployeesForStat = (title) => {
-  if (title === "Total Employees") {
-    return employees;
-  }
+  const getEmployeesForStat = (title) => {
+    if (title === "Total Employees") {
+      return employees;
+    }
 
-  if (title === "Present Today") {
-    return employees.filter((employee) =>
-      todayAttendance.some(
-        (record) =>
-          String(record.employee?._id || record.employee) ===
-            String(employee._id) &&
-          record.status === "present"
-      )
-    );
-  }
+    if (title === "Present Today") {
+      return employees.filter((employee) =>
+        todayAttendance.some(
+          (record) =>
+            String(record.employee?._id || record.employee) ===
+              String(employee._id) && record.status === "present",
+        ),
+      );
+    }
 
-  if (title === "Absent Today") {
-    return employees.filter((employee) =>
-      todayAttendance.some(
-        (record) =>
-          String(record.employee?._id || record.employee) ===
-            String(employee._id) &&
-          record.status === "absent"
-      )
-    );
-  }
+    if (title === "Absent Today") {
+      return employees.filter((employee) =>
+        todayAttendance.some(
+          (record) =>
+            String(record.employee?._id || record.employee) ===
+              String(employee._id) && record.status === "absent",
+        ),
+      );
+    }
 
-  if (title === "On Leave") {
-    return employees.filter((employee) =>
-      leaves.some((leave) => {
-        const leaveEmployeeId =
-          leave.employee?._id || leave.employee;
+    if (title === "On Leave") {
+      return employees.filter((employee) =>
+        leaves.some((leave) => {
+          const leaveEmployeeId = leave.employee?._id || leave.employee;
 
-        if (
-          String(leaveEmployeeId) !== String(employee._id) ||
-          leave.status !== "approved"
-        ) {
-          return false;
-        }
+          if (
+            String(leaveEmployeeId) !== String(employee._id) ||
+            leave.status !== "approved"
+          ) {
+            return false;
+          }
 
-        const fromDate = getRecordDate(leave.fromDate);
-        const toDate = getRecordDate(leave.toDate);
+          const fromDate = getRecordDate(leave.fromDate);
+          const toDate = getRecordDate(leave.toDate);
 
-        return today >= fromDate && today <= toDate;
-      })
-    );
-  }
+          return today >= fromDate && today <= toDate;
+        }),
+      );
+    }
 
-  return [];
-};
+    return [];
+  };
 
   return (
     <div className="min-h-screen bg-blue-100 p-6">
@@ -318,10 +315,10 @@ const getEmployeesForStat = (title) => {
 
           return (
             <div
-  key={stat.title}
-  onClick={() => setSelectedStat(stat.title)}
-  className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition cursor-pointer hover:border-blue-300"
->
+              key={stat.title}
+              onClick={() => setSelectedStat(stat.title)}
+              className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition cursor-pointer hover:border-blue-300"
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-500">{stat.title}</p>
@@ -344,80 +341,68 @@ const getEmployeesForStat = (title) => {
 
       {/* Employees */}
 
-<div className="bg-white border border-gray-200 rounded-xl shadow-sm mb-6">
+      <div className="bg-white border border-gray-200 rounded-xl shadow-sm mb-6">
+        {/* Header */}
+        <div className="p-5 border-b border-gray-100">
+          <h2 className="text-lg font-semibold text-gray-800">Employees</h2>
 
-  {/* Header */}
-  <div className="p-5 border-b border-gray-100">
-    <h2 className="text-lg font-semibold text-gray-800">
-      Employees
-    </h2>
-
-    <p className="text-sm text-gray-500 mt-1">
-      Click an employee to view attendance analytics.
-    </p>
-  </div>
-
-  {/* Employee Cards */}
-  <div className="p-5">
-
-    {employees.length === 0 ? (
-
-      <p className="text-gray-500 text-center py-6">
-        No employees found.
-      </p>
-
-    ) : (
-
-<div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-  {employees.map((employee) => (
-    <div
-      key={employee._id}
-      onClick={() => setSelectedEmployee(employee)}
-      className="border border-gray-200 rounded-xl p-5 cursor-pointer hover:shadow-md hover:border-blue-300 transition cursor-pointer"
-    >
-      <div className="flex items-center gap-4">
-
-        {/* Avatar */}
-        <div className="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center">
-          <span className="text-xl font-semibold text-blue-600">
-            {employee.name?.charAt(0).toUpperCase()}
-          </span>
-        </div>
-
-        {/* Employee Information */}
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800">
-            {employee.name}
-          </h3>
-
-          <p className="text-sm text-gray-500">
-            {employee.employeeId}
-          </p>
-
-          <p className="text-sm text-gray-400">
-            {employee.department}
-          </p>
-
-          <p className="text-sm text-gray-400">
-            {employee.designation}
+          <p className="text-sm text-gray-500 mt-1">
+            Click an employee to view attendance analytics.
           </p>
         </div>
 
+        {/* Employee Cards */}
+        <div className="p-5">
+          {employees.length === 0 ? (
+            <p className="text-gray-500 text-center py-6">
+              No employees found.
+            </p>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {employees.map((employee) => (
+                <div
+                  key={employee._id}
+                  onClick={() => setSelectedEmployee(employee)}
+                  className="border border-gray-200 rounded-xl p-5 cursor-pointer hover:shadow-md hover:border-blue-300 transition cursor-pointer"
+                >
+                  <div className="flex items-center gap-4">
+                    {/* Avatar */}
+                    <div className="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center">
+                      <span className="text-xl font-semibold text-blue-600">
+                        {employee.name?.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+
+                    {/* Employee Information */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        {employee.name}
+                      </h3>
+
+                      <p className="text-sm text-gray-500">
+                        {employee.employeeId}
+                      </p>
+
+                      <p className="text-sm text-gray-400">
+                        {employee.department}
+                      </p>
+
+                      <p className="text-sm text-gray-400">
+                        {employee.designation}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Click text */}
+                  <div className="mt-5 text-blue-600 font-medium">
+                    View Attendance →
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-
-      {/* Click text */}
-      <div className="mt-5 text-blue-600 font-medium">
-        View Attendance →
-      </div>
-    </div>
-  ))}
-</div>
-
-    )}
-
-  </div>
-
-</div>
 
       {/* Main Content */}
 
@@ -609,99 +594,88 @@ const getEmployeesForStat = (title) => {
       </div>
 
       {selectedStat && (
-  <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
+          {/* Background */}
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setSelectedStat(null)}
+          />
 
-    {/* Background */}
-    <div
-      className="absolute inset-0 bg-black/40"
-      onClick={() => setSelectedStat(null)}
-    />
+          {/* Modal */}
+          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[85vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div>
+                <h2 className="text-xl font-bold text-gray-800">
+                  {selectedStat}
+                </h2>
 
-    {/* Modal */}
-    <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[85vh] overflow-y-auto">
-
-      {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-200">
-        <div>
-          <h2 className="text-xl font-bold text-gray-800">
-            {selectedStat}
-          </h2>
-
-          <p className="text-sm text-gray-500 mt-1">
-            {getEmployeesForStat(selectedStat).length} employee(s)
-          </p>
-        </div>
-
-        <button
-          onClick={() => setSelectedStat(null)}
-          className="w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 text-xl"
-        >
-          ×
-        </button>
-      </div>
-
-      {/* Employees */}
-      <div className="p-6">
-
-        {getEmployeesForStat(selectedStat).length === 0 ? (
-          <div className="py-10 text-center text-gray-500">
-            No employees found.
-          </div>
-        ) : (
-          <div className="space-y-3">
-
-            {getEmployeesForStat(selectedStat).map((employee) => (
-              <div
-                key={employee._id}
-                onClick={() => {
-                  setSelectedStat(null);
-                  setSelectedEmployee(employee);
-                }}
-                className="border border-gray-200 rounded-xl p-4 cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition"
-              >
-                <div className="flex items-center gap-4">
-
-                  {/* Avatar */}
-                  <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
-                    <span className="text-lg font-semibold text-blue-600">
-                      {employee.name?.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-
-                  {/* Employee */}
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-800">
-                      {employee.name}
-                    </h3>
-
-                    <p className="text-sm text-gray-500">
-                      {employee.employeeId}
-                    </p>
-
-                    <p className="text-sm text-gray-400">
-                      {employee.department}
-                      {employee.designation
-                        ? ` • ${employee.designation}`
-                        : ""}
-                    </p>
-                  </div>
-
-                  <ArrowRight
-                    size={18}
-                    className="text-blue-600"
-                  />
-
-                </div>
+                <p className="text-sm text-gray-500 mt-1">
+                  {getEmployeesForStat(selectedStat).length} employee(s)
+                </p>
               </div>
-            ))}
 
+              <button
+                onClick={() => setSelectedStat(null)}
+                className="w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 text-xl"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Employees */}
+            <div className="p-6">
+              {getEmployeesForStat(selectedStat).length === 0 ? (
+                <div className="py-10 text-center text-gray-500">
+                  No employees found.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {getEmployeesForStat(selectedStat).map((employee) => (
+                    <div
+                      key={employee._id}
+                      onClick={() => {
+                        setSelectedStat(null);
+                        setSelectedEmployee(employee);
+                      }}
+                      className="border border-gray-200 rounded-xl p-4 cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition"
+                    >
+                      <div className="flex items-center gap-4">
+                        {/* Avatar */}
+                        <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+                          <span className="text-lg font-semibold text-blue-600">
+                            {employee.name?.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+
+                        {/* Employee */}
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-800">
+                            {employee.name}
+                          </h3>
+
+                          <p className="text-sm text-gray-500">
+                            {employee.employeeId}
+                          </p>
+
+                          <p className="text-sm text-gray-400">
+                            {employee.department}
+                            {employee.designation
+                              ? ` • ${employee.designation}`
+                              : ""}
+                          </p>
+                        </div>
+
+                        <ArrowRight size={18} className="text-blue-600" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        )}
-
-      </div>
-    </div>
-  </div>
-)}
+        </div>
+      )}
 
       {selectedEmployee && (
         <EmployeeAttendanceChart
