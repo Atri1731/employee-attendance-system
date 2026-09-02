@@ -799,6 +799,49 @@ const checkOut = async (req, res) => {
 };
 
 // ===============================
+// Auto Checkout at 6:00 PM IST
+// ===============================
+const autoCheckoutIfNeeded = async (attendance) => {
+  if (!attendance) return attendance;
+
+  // If employee never checked in, do nothing
+  if (!attendance.checkIn) {
+    return attendance;
+  }
+
+  // If employee already checked out, do nothing
+  if (attendance.checkOut) {
+    return attendance;
+  }
+
+  const now = new Date();
+
+  const currentTime = new Intl.DateTimeFormat("en-IN", {
+    timeZone: TIME_ZONE,
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(now);
+
+  // Convert current time to minutes
+  const [hours, minutes] = currentTime.split(":").map(Number);
+
+  const currentMinutes = hours * 60 + minutes;
+
+  // 6:00 PM = 18:00 = 1080 minutes
+  const sixPM = 18 * 60;
+
+  // Only auto checkout after 6 PM
+  if (currentMinutes >= sixPM) {
+    attendance.checkOut = "18:00";
+
+    await attendance.save();
+  }
+
+  return attendance;
+};
+
+// ===============================
 // Employee: Get My Attendance
 // ===============================
 const getMyAttendance = async (req, res) => {
