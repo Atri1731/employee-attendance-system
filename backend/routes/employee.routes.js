@@ -4,6 +4,7 @@ const {
   createEmployee,
   getAllEmployees,
   updateEmployee,
+  updateEmployeeSalary,
   deleteEmployee,
   getMyProfile,
   updateMyProfile,
@@ -22,6 +23,8 @@ router.post("/", protect, authorize("admin"), createEmployee);
 router.get("/me", protect, getMyProfile);
 
 router.put("/me", protect, updateMyProfile);
+
+router.put("/:id/salary", protect, authorize("admin"), updateEmployeeSalary);
 
 router.put("/:id", protect, authorize("admin"), updateEmployee);
 

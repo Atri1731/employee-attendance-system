@@ -13,6 +13,7 @@ const createEmployee = async (req, res) => {
       department,
       designation,
       joiningDate,
+      salary,
     } = req.body;
 
     if (!employeeId || !name || !email || !password) {
@@ -48,6 +49,7 @@ const createEmployee = async (req, res) => {
       department,
       designation,
       joiningDate,
+      salary: Number(salary) || 0,
       role: "employee",
       status: "active",
     });
@@ -63,8 +65,10 @@ const createEmployee = async (req, res) => {
         department: employee.department,
         designation: employee.designation,
         joiningDate: employee.joiningDate,
+        salary: employee.salary,
         role: employee.role,
         status: employee.status,
+        
       },
     });
   } catch (error) {
@@ -111,6 +115,7 @@ const updateEmployee = async (req, res) => {
       designation,
       joiningDate,
       status,
+      salary,
     } = req.body;
 
     // Find employee
@@ -125,6 +130,7 @@ const updateEmployee = async (req, res) => {
       });
     }
 
+    
     // Check employee ID if changed
     if (employeeId && employeeId !== employee.employeeId) {
       const existingEmployee = await User.findOne({
@@ -182,6 +188,16 @@ const updateEmployee = async (req, res) => {
       employee.status = status;
     }
 
+  if (salary !== undefined) {
+  if (Number(salary) < 0) {
+    return res.status(400).json({
+      message: "Salary cannot be negative",
+    });
+  }
+
+  employee.salary = Number(salary);
+}
+
     await employee.save();
 
     res.status(200).json({
@@ -195,12 +211,124 @@ const updateEmployee = async (req, res) => {
         department: employee.department,
         designation: employee.designation,
         joiningDate: employee.joiningDate,
+        salary: employee.salary,
         role: employee.role,
         status: employee.status,
       },
     });
   } catch (error) {
     console.error("Update employee error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
+// UPDATE EMPLOYEE SALARY - ADMIN
+// const updateEmployeeSalary = async (req, res) => {
+//   try {
+//     const {id} = req.params;
+//     const {salary} = req.body;
+
+//     // Validate salary
+//     if (salary === undefined || salary === null) {
+//       return res.status(400).json({
+//         message: "Salary is required",
+//       });
+//     }
+
+//     if (salary !== undefined) {
+//       employee.salary = Number(salary);
+//     }
+
+//     if (Number(salary) < 0) {
+//       return res.status(400).json({
+//         message: "Salary cannot be negative",
+//       });
+//     }
+
+//     // Find employee
+//     const employee = await User.findOne({
+//       _id: id,
+//       role: "employee",
+//     });
+
+//     if (!employee) {
+//       return res.status(404).json({
+//         message: "Employee not found",
+//       });
+//     }
+
+//     // Update salary
+//     employee.salary = Number(salary);
+
+//     await employee.save();
+
+//     res.status(200).json({
+//       message: "Employee salary updated successfully",
+//       employee: {
+//         id: employee._id,
+//         employeeId: employee.employeeId,
+//         name: employee.name,
+//         salary: employee.salary,
+//       },
+//     });
+//   } catch (error) {
+//     console.error("Update employee salary error:", error);
+
+//     res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// };
+// UPDATE EMPLOYEE SALARY - ADMIN
+const updateEmployeeSalary = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const {salary} = req.body;
+
+    // Validate salary
+    if (salary === undefined || salary === null || salary === "") {
+      return res.status(400).json({
+        message: "Salary is required",
+      });
+    }
+
+    if (Number(salary) < 0) {
+      return res.status(400).json({
+        message: "Salary cannot be negative",
+      });
+    }
+
+    // Find employee
+    const employee = await User.findOne({
+      _id: id,
+      role: "employee",
+    });
+
+    if (!employee) {
+      return res.status(404).json({
+        message: "Employee not found",
+      });
+    }
+
+    // Update salary
+    employee.salary = Number(salary);
+
+    await employee.save();
+
+    res.status(200).json({
+      message: "Employee salary updated successfully",
+      employee: {
+        id: employee._id,
+        employeeId: employee.employeeId,
+        name: employee.name,
+        salary: employee.salary,
+      },
+    });
+  } catch (error) {
+    console.error("Update employee salary error:", error);
 
     res.status(500).json({
       message: "Server error",
@@ -250,9 +378,7 @@ const deleteEmployee = async (req, res) => {
 // Get logged-in employee profile
 const getMyProfile = async (req, res) => {
   try {
-    const employee = await User.findById(req.user.id).select(
-      "-password"
-    );
+    const employee = await User.findById(req.user.id).select("-password");
 
     if (!employee) {
       return res.status(404).json({
@@ -273,13 +399,16 @@ const getMyProfile = async (req, res) => {
   }
 };
 
-
 // Update logged-in employee profile
 const updateMyProfile = async (req, res) => {
   try {
-    const { name, email, phone } = req.body;
+    const {name, email, phone} = req.body;
 
-    const employee = await User.findById(req.user.id);
+    // const employee = await User.findById(req.user.id);
+
+    const employees = await User.find({role: "employee"})
+  .select("-password -resetPasswordToken -resetPasswordExpires")
+  .sort({createdAt: -1});
 
     if (!employee) {
       return res.status(404).json({
@@ -321,6 +450,7 @@ module.exports = {
   createEmployee,
   getAllEmployees,
   updateEmployee,
+  updateEmployeeSalary,
   deleteEmployee,
   getMyProfile,
   updateMyProfile,
