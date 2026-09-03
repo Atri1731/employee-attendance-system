@@ -10,7 +10,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/auth.routes");
-const employeeRoutes = require("./routes/employee.routes")
+const employeeRoutes = require("./routes/employee.routes");
 const payrollRoutes = require("./routes/payroll.routes");
 const attendanceRoutes = require("./routes/attendance.routes");
 const leaveRoutes = require("./routes/leave.routes");
@@ -23,43 +23,17 @@ const app = express();
 
 connectDB();
 
-// app.use(
-//   cors({
-//     origin: [
-//       "http://localhost:5173",
-//       "https://employee-attendance-system-b0327ctyl-atri-patel-s-projects.vercel.app",
-//       "https://employee-attendance-system-one-rosy.vercel.app",
-//     ],
-//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//   })
-// );
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://employee-attendance-system-b0327ctyl-atri-patel-s-projects.vercel.app",
-  "https://employee-attendance-system-one-rosy.vercel.app",
-];
-
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow requests without an origin
-      // (Postman, browser tools, etc.)
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      console.log("Blocked CORS origin:", origin);
-      return callback(new Error("Not allowed by CORS"));
-    },
+    origin: [
+      "http://localhost:5173",
+      "https://employee-attendance-system-667rguo14-atri-patel-s-projects.vercel.app",
+      "https://employee-attendance-system-b0327ctyl-atri-patel-s-projects.vercel.app",
+      "https://employee-attendance-system-one-rosy.vercel.app",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
+  }),
 );
 
 app.use(express.json());
@@ -70,9 +44,6 @@ app.use("/api/attendance", attendanceRoutes);
 app.use("/api/leaves", leaveRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/holidays", holidayRoutes);
-
-
-
 
 app.use("/api/payroll", payrollRoutes);
 app.get("/", (req, res) => {
