@@ -69,10 +69,9 @@ function App() {
           <Route path="leave/apply" element={<ApplyLeave />} />
 
           <Route path="myleaves" element={<MyLeaves />} />
-          <Route path="/employee/holidays" element={<EmployeeHolidays/>} />
-<Route path="salary" element={<MySalary />} />
+          <Route path="/employee/holidays" element={<EmployeeHolidays />} />
+          <Route path="salary" element={<MySalary />} />
           <Route path="profile" element={<Profile />} />
-
         </Route>
       </Routes>
     </BrowserRouter>
