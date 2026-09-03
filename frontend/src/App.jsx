@@ -19,6 +19,7 @@ import LeaveManagement from "./pages/admin/LeaveManagement";
 import Reports from "./pages/admin/Reports";
 import Departments from "./pages/admin/Departments";
 import Holidays from "./pages/admin/Holidays";
+import Payroll from "./pages/admin/Payroll";
 
 // Employee Pages
 import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
@@ -55,8 +56,8 @@ function App() {
           <Route path="reports" element={<Reports />} />
 
           <Route path="departments" element={<Departments />} />
-
-          <Route path="/admin/holidays" element={<Holidays />} />
+<Route path="salary" element={<Payroll />} />
+          <Route path="holidays" element={<Holidays />} />
         </Route>
 
         {/* ================= EMPLOYEE ================= */}

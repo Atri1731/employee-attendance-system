@@ -55,6 +55,11 @@ function Sidebar({role}) {
       icon: Building2,
     },
     {
+  name: "Salary",
+  path: "/admin/salary",
+  icon: Wallet,
+},
+    {
       name: "Holidays",
       path: "/admin/holidays",
       icon: Calendar,
