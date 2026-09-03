@@ -7,12 +7,13 @@ import {
   Building2,
   Calendar,
   User,
+  Wallet,
   LogOut,
 } from "lucide-react";
 
-import { NavLink, useNavigate } from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 
-function Sidebar({ role }) {
+function Sidebar({role}) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -82,6 +83,11 @@ function Sidebar({ role }) {
       icon: FileText,
     },
     {
+      name: "My Salary",
+      path: "/employee/salary",
+      icon: Wallet,
+    },
+    {
       name: "Holidays",
       path: "/employee/holidays",
       icon: Calendar,
@@ -97,16 +103,11 @@ function Sidebar({ role }) {
 
   return (
     <aside className="w-64 h-screen fixed left-0 top-0 !bg-gray-100 border-r border-gray-300 flex flex-col shrink-0 z-50">
-
       {/* Logo */}
       <div className="px-6 py-5 border-b border-gray-300 !bg-gray-100">
-        <h1 className="text-xl font-bold text-blue-600">
-          Employee Attendance
-        </h1>
+        <h1 className="text-xl font-bold text-blue-600">Employee Attendance</h1>
 
-        <p className="text-sm text-gray-500 mt-1 capitalize">
-          {role} Panel
-        </p>
+        <p className="text-sm text-gray-500 mt-1 capitalize">{role} Panel</p>
       </div>
 
       {/* Menu */}
@@ -118,7 +119,7 @@ function Sidebar({ role }) {
             <NavLink
               key={item.path}
               to={item.path}
-              className={({ isActive }) =>
+              className={({isActive}) =>
                 `flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition ${
                   isActive
                     ? "bg-blue-50 text-blue-600 font-semibold"

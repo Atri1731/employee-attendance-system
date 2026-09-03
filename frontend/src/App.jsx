@@ -27,6 +27,7 @@ import ApplyLeave from "./pages/employee/ApplyLeave";
 import MyLeaves from "./pages/employee/MyLeaves";
 import Profile from "./pages/employee/Profile";
 import EmployeeHolidays from "./pages/employee/Holidays";
+import MySalary from "./pages/employee/MySalary";
 
 function App() {
   return (
@@ -69,8 +70,9 @@ function App() {
 
           <Route path="myleaves" element={<MyLeaves />} />
           <Route path="/employee/holidays" element={<EmployeeHolidays/>} />
-
+<Route path="salary" element={<MySalary />} />
           <Route path="profile" element={<Profile />} />
+
         </Route>
       </Routes>
     </BrowserRouter>
