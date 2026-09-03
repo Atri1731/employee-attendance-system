@@ -82,11 +82,16 @@ function Sidebar({role}) {
       path: "/employee/myleaves",
       icon: FileText,
     },
+    // {
+    //   name: "My Salary",
+    //   path: "/employee/salary",
+    //   icon: Wallet,
+    // },
     {
-      name: "My Salary",
-      path: "/employee/salary",
-      icon: Wallet,
-    },
+  name: "My Salary",
+  path: "/employee/salary",
+  icon: Wallet,
+},
     {
       name: "Holidays",
       path: "/employee/holidays",
