@@ -23,19 +23,54 @@ const app = express();
 
 connectDB();
 
+// app.use(
+//   cors({
+//     origin: [
+//       "http://localhost:5173",
+//       "https://employee-attendance-system-667rguo14-atri-patel-s-projects.vercel.app",
+//       "https://employee-attendance-system-b0327ctyl-atri-patel-s-projects.vercel.app",
+//       "https://employee-attendance-system-one-rosy.vercel.app",
+//     ],
+//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   }),
+// );
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://employee-attendance-system-one-rosy.vercel.app",
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://employee-attendance-system-667rguo14-atri-patel-s-projects.vercel.app",
-      "https://employee-attendance-system-b0327ctyl-atri-patel-s-projects.vercel.app",
-      "https://employee-attendance-system-one-rosy.vercel.app",
-    ],
+    origin: function (origin, callback) {
+      // Allow requests without an origin
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      // Allow your Vercel project deployments
+      if (
+        origin === "https://employee-attendance-system-one-rosy.vercel.app" ||
+        origin.includes("employee-attendance-system-")
+      ) {
+        return callback(null, true);
+      }
+
+      // Allow localhost
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      callback(new Error("Not allowed by CORS"));
+    },
+
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+
     allowedHeaders: ["Content-Type", "Authorization"],
+
+    credentials: true,
   }),
 );
-
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
