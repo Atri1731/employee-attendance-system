@@ -56,7 +56,7 @@ function App() {
           <Route path="reports" element={<Reports />} />
 
           <Route path="departments" element={<Departments />} />
-<Route path="salary" element={<Payroll />} />
+          <Route path="salary" element={<Payroll />} />
           <Route path="holidays" element={<Holidays />} />
         </Route>
 
