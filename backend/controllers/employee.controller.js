@@ -400,15 +400,58 @@ const getMyProfile = async (req, res) => {
 };
 
 // Update logged-in employee profile
+// const updateMyProfile = async (req, res) => {
+//   try {
+//     const {name, email, phone} = req.body;
+
+//     // const employee = await User.findById(req.user.id);
+
+//     const employees = await User.find({role: "employee"})
+//   .select("-password -resetPasswordToken -resetPasswordExpires")
+//   .sort({createdAt: -1});
+
+//     if (!employee) {
+//       return res.status(404).json({
+//         message: "Employee not found",
+//       });
+//     }
+
+//     if (name !== undefined) {
+//       employee.name = name;
+//     }
+
+//     if (email !== undefined) {
+//       employee.email = email;
+//     }
+
+//     if (phone !== undefined) {
+//       employee.phone = phone;
+//     }
+
+//     await employee.save();
+
+//     res.status(200).json({
+//       message: "Profile updated successfully",
+//       employee: {
+//         ...employee.toObject(),
+//         password: undefined,
+//       },
+//     });
+//   } catch (error) {
+//     console.error("Update my profile error:", error);
+
+//     res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// };
+
 const updateMyProfile = async (req, res) => {
   try {
-    const {name, email, phone} = req.body;
+    const { name, email, phone } = req.body;
 
-    // const employee = await User.findById(req.user.id);
-
-    const employees = await User.find({role: "employee"})
-  .select("-password -resetPasswordToken -resetPasswordExpires")
-  .sort({createdAt: -1});
+    // Find the currently logged-in employee
+    const employee = await User.findById(req.user.id);
 
     if (!employee) {
       return res.status(404).json({
@@ -416,6 +459,7 @@ const updateMyProfile = async (req, res) => {
       });
     }
 
+    // Update only allowed fields
     if (name !== undefined) {
       employee.name = name;
     }
