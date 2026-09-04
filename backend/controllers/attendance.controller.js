@@ -670,6 +670,70 @@ const getEmployeeAttendance = async (req, res) => {
   }
 };
 
+// // ===============================
+// // Employee: Check In
+// // ===============================
+// const checkIn = async (req, res) => {
+//   try {
+//     const employeeId = req.user.id;
+
+//     // Get today's date in India
+//     const todayString = getTodayIST();
+
+//     // Get today's IST range
+//     const { startOfDay, endOfDay } =
+//       getDayRange(todayString);
+
+//     // Check if attendance already exists today
+//     const existingAttendance =
+//       await Attendance.findOne({
+//         employee: employeeId,
+//         date: {
+//           $gte: startOfDay,
+//           $lte: endOfDay,
+//         },
+//       });
+
+//     if (existingAttendance) {
+//       return res.status(400).json({
+//         message: "You have already checked in today",
+//       });
+//     }
+
+//     // Get current time in India
+//     const checkInTime = getCurrentTimeIST();
+
+//     // Create attendance
+//     const attendance = await Attendance.create({
+//       employee: employeeId,
+//       date: startOfDay,
+//       status: "present",
+//       checkIn: checkInTime,
+//       checkOut: null,
+//       remarks: "",
+//     });
+
+//     const populatedAttendance =
+//       await Attendance.findById(
+//         attendance._id
+//       ).populate(
+//         "employee",
+//         "employeeId name email department designation"
+//       );
+
+//     res.status(201).json({
+//       message: "Check-in successful",
+//       attendance: populatedAttendance,
+//     });
+//   } catch (error) {
+//     console.error("Check-in error:", error);
+
+//     res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// };
+
 // ===============================
 // Employee: Check In
 // ===============================
@@ -685,14 +749,13 @@ const checkIn = async (req, res) => {
       getDayRange(todayString);
 
     // Check if attendance already exists today
-    const existingAttendance =
-      await Attendance.findOne({
-        employee: employeeId,
-        date: {
-          $gte: startOfDay,
-          $lte: endOfDay,
-        },
-      });
+    const existingAttendance = await Attendance.findOne({
+      employee: employeeId,
+      date: {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      },
+    });
 
     if (existingAttendance) {
       return res.status(400).json({
@@ -703,13 +766,28 @@ const checkIn = async (req, res) => {
     // Get current time in India
     const checkInTime = getCurrentTimeIST();
 
+    // Convert current time to minutes
+    const [hours, minutes] = checkInTime
+      .split(":")
+      .map(Number);
+
+    const currentMinutes = hours * 60 + minutes;
+
+    // 6:00 PM = 18:00 = 1080 minutes
+    const sixPM = 18 * 60;
+
+    // If employee checks in at or after 6:00 PM,
+    // automatically set checkout to 6:00 PM.
+    const automaticCheckOut =
+      currentMinutes >= sixPM ? "18:00" : null;
+
     // Create attendance
     const attendance = await Attendance.create({
       employee: employeeId,
       date: startOfDay,
       status: "present",
       checkIn: checkInTime,
-      checkOut: null,
+      checkOut: automaticCheckOut,
       remarks: "",
     });
 
@@ -722,7 +800,10 @@ const checkIn = async (req, res) => {
       );
 
     res.status(201).json({
-      message: "Check-in successful",
+      message:
+        automaticCheckOut
+          ? "Check-in successful. Checkout automatically set to 6:00 PM."
+          : "Check-in successful",
       attendance: populatedAttendance,
     });
   } catch (error) {
