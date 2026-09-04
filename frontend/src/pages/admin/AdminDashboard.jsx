@@ -111,8 +111,9 @@ function AdminDashboard() {
     try {
       setLoading(true);
 
-      const token = localStorage.getItem("token");
-
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
+      
       const headers = {
         Authorization: `Bearer ${token}`,
       };

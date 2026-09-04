@@ -764,7 +764,8 @@ function Holidays() {
     try {
       setLoading(true);
 
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/holidays`, {
         headers: {
@@ -844,7 +845,8 @@ function Holidays() {
     try {
       setSaving(true);
 
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/holidays`, {
         method: "POST",
@@ -901,7 +903,8 @@ function Holidays() {
     try {
       setSaving(true);
 
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/holidays/${editingHoliday._id}`,
@@ -954,7 +957,8 @@ function Holidays() {
     }
 
     try {
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/holidays/${id}`,

@@ -18,7 +18,8 @@ const [statusFilter, setStatusFilter] = useState("");
     try {
       setDepartmentLoading(true);
 
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch(
   `${import.meta.env.VITE_API_URL}/departments`,
@@ -57,7 +58,8 @@ const [statusFilter, setStatusFilter] = useState("");
       setLoading(true);
       setError("");
 
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
      const response = await fetch(
   `${import.meta.env.VITE_API_URL}/employees`,
@@ -141,7 +143,8 @@ const [statusFilter, setStatusFilter] = useState("");
     try {
       setEditLoading(true);
 
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       // console.log("TOKEN:", token);
       // console.log("EMPLOYEE:", editingEmployee);
@@ -217,7 +220,8 @@ const [statusFilter, setStatusFilter] = useState("");
     }
 
     try {
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch(
       `${import.meta.env.VITE_API_URL}/employees/${employeeId}`,

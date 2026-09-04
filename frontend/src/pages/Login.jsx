@@ -287,18 +287,10 @@
 
 // export default Login;
 
-
-import { useState } from "react";
-import {
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  UserCog,
-  UserRound,
-} from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
-import { loginUser } from "../services/auth.service";
+import {useState} from "react";
+import {Mail, Lock, Eye, EyeOff, UserCog, UserRound} from "lucide-react";
+import {useNavigate, Link} from "react-router-dom";
+import {loginUser} from "../services/auth.service";
 
 function Login() {
   const navigate = useNavigate();
@@ -313,7 +305,7 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   function handleChange(e) {
-    const { name, value } = e.target;
+    const {name, value} = e.target;
 
     setFormData((prev) => ({
       ...prev,
@@ -334,8 +326,11 @@ function Login() {
       console.log("Login response:", data);
 
       // Save authentication data
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      // localStorage.setItem("token", data.token);
+      // localStorage.setItem("user", JSON.stringify(data.user));
+
+      sessionStorage.setItem("token", data.token);
+      sessionStorage.setItem("user", JSON.stringify(data.user));
 
       // Redirect according to role
       if (data.user.role === "admin") {
@@ -348,33 +343,27 @@ function Login() {
 
       alert(
         error.response?.data?.message ||
-          "Login failed. Please check your email and password."
+          "Login failed. Please check your email and password.",
       );
     }
   }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-3 sm:p-4">
-
       <div className="w-full max-w-5xl bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200">
-<div className="flex flex-col md:flex-row">
-
+        <div className="flex flex-col md:flex-row">
           {/* Left Image */}
-  <div className="w-full md:w-1/2 bg-blue-50 flex items-center justify-center overflow-hidden">
-    <img
-      src="/attendance-login.png"
-      alt="Attendance Management System"
-      className="w-full h-auto object-contain"
-    />
-  </div>
-
-
+          <div className="w-full md:w-1/2 bg-blue-50 flex items-center justify-center overflow-hidden">
+            <img
+              src="/attendance-login.png"
+              alt="Attendance Management System"
+              className="w-full h-auto object-contain"
+            />
+          </div>
 
           {/* Right Login Section */}
           <div className="w-full md:w-1/2 flex items-center justify-center px-5 py-8 sm:p-8 md:p-12">
-
             <div className="w-full max-w-md">
-
               {/* Heading */}
               <div className="mb-7">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
@@ -382,8 +371,8 @@ function Login() {
                 </h2>
 
                 <p className="text-sm sm:text-base text-gray-500 mt-1">
-                  Sign in to your{" "}
-                  {role === "admin" ? "admin" : "employee"} account
+                  Sign in to your {role === "admin" ? "admin" : "employee"}{" "}
+                  account
                 </p>
               </div>
 
@@ -394,7 +383,6 @@ function Login() {
                 </label>
 
                 <div className="grid grid-cols-2 gap-3">
-
                   {/* Admin */}
                   <button
                     type="button"
@@ -422,13 +410,11 @@ function Login() {
                     <UserRound size={19} />
                     Employee
                   </button>
-
                 </div>
               </div>
 
               {/* Login Form */}
               <form onSubmit={handleSubmit}>
-
                 {/* Email */}
                 <div className="mb-5">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -486,18 +472,13 @@ function Login() {
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
-                      {showPassword ? (
-                        <EyeOff size={19} />
-                      ) : (
-                        <Eye size={19} />
-                      )}
+                      {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
                     </button>
                   </div>
                 </div>
 
                 {/* Remember + Forgot Password */}
                 <div className="flex items-center justify-between mb-6">
-
                   <label className="flex items-center gap-2 text-sm text-gray-600">
                     <input
                       type="checkbox"
@@ -513,7 +494,6 @@ function Login() {
                   >
                     Forgot Password?
                   </button>
-
                 </div>
 
                 {/* Sign In */}
@@ -534,22 +514,16 @@ function Login() {
                     Create Admin Account
                   </Link>
                 </p>
-
               </form>
 
               {/* Footer */}
               <p className="text-center text-xs text-gray-400 mt-8">
                 © 2026 Employee Attendance Management System
               </p>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }

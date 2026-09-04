@@ -31,7 +31,8 @@ function Payroll() {
       setLoading(true);
       setError("");
 
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/payroll`,
@@ -88,7 +89,8 @@ function Payroll() {
       setSaving(true);
       setError("");
 
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       await axios.put(
         `${import.meta.env.VITE_API_URL}/employees/${employeeId}/salary`,

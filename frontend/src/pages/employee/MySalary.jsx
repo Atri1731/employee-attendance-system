@@ -51,7 +51,8 @@ function MySalary() {
 
 const fetchMyPayroll = async () => {
   try {
-    const token = localStorage.getItem("token");
+    // const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     // const url = "http://localhost:5000/api/payroll/me";
 const url = `${import.meta.env.VITE_API_URL}/payroll/me`;

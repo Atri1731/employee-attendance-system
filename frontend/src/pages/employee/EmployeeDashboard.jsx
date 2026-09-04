@@ -28,7 +28,8 @@ function EmployeeDashboard() {
 
   const fetchTodayAttendance = async () => {
     try {
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/attendance/my`, {
         headers: {
@@ -79,7 +80,8 @@ function EmployeeDashboard() {
   };
   const fetchLeaveBalance = async () => {
         try {
-          const token = localStorage.getItem("token");
+          // const token = localStorage.getItem("token");
+          const token = sessionStorage.getItem("token");
 
           const response = await fetch(`${import.meta.env.VITE_API_URL}/leaves/my`, {
             headers: {
@@ -157,7 +159,8 @@ function EmployeeDashboard() {
     try {
       setLoading(true);
 
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch(
        `${import.meta.env.VITE_API_URL}/attendance/check-in`,

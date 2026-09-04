@@ -23,7 +23,8 @@ function Departments() {
 
   const fetchDepartments = async () => {
     try {
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
 const response = await fetch(
   `${import.meta.env.VITE_API_URL}/departments`,
@@ -55,7 +56,9 @@ const response = await fetch(
     try {
       setSaving(true);
 
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
+
    const response = await fetch(
   `${import.meta.env.VITE_API_URL}/departments`,
   {
@@ -104,7 +107,8 @@ const response = await fetch(
     try {
       setSaving(true);
 
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/departments/${editingDepartment._id}`,
@@ -150,7 +154,8 @@ const response = await fetch(
     if (!confirmDelete) return;
 
     try {
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/departments/${id}`,
