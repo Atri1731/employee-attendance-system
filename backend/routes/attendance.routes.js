@@ -3,9 +3,10 @@ const express = require("express");
 const {
   markAttendance,
   markAbsent,
+  updateAttendanceStatus,
   getAllAttendance,
   getEmployeeAttendance,
-   getMyAttendance,
+  getMyAttendance,
   checkIn,
   checkOut,
 } = require("../controllers/attendance.controller");
@@ -20,32 +21,22 @@ router.put("/check-out", protect, checkOut);
 
 router.get("/my", protect, getMyAttendance);
 
-router.post(
-  "/",
+router.post("/", protect, authorize("admin"), markAttendance);
+
+router.post("/absent", protect, authorize("admin"), markAbsent);
+router.put(
+  "/:attendanceId",
   protect,
   authorize("admin"),
-  markAttendance
+  updateAttendanceStatus,
 );
 
-
-router.post(
-  "/absent",
-  protect,
-  authorize("admin"),
-  markAbsent
-);
-
-router.get(
-  "/",
-  protect,
-  authorize("admin"),
-  getAllAttendance
-);
+router.get("/", protect, authorize("admin"), getAllAttendance);
 
 router.get(
   "/employee/:employeeId",
   protect,
   authorize("admin"),
-  getEmployeeAttendance
+  getEmployeeAttendance,
 );
 module.exports = router;

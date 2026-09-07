@@ -38,6 +38,14 @@ function Attendance() {
   const [savingAbsent, setSavingAbsent] = useState(false);
 
   // =========================
+  // UPDATE ATTENDANCE STATES
+  // =========================
+
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [selectedAttendance, setSelectedAttendance] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [savingStatus, setSavingStatus] = useState(false);
+  // =========================
   // LOAD DATA
   // =========================
 
@@ -60,7 +68,6 @@ function Attendance() {
 
       // const token = localStorage.getItem("token");
       const token = sessionStorage.getItem("token");
-
 
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/attendance`,
@@ -90,13 +97,31 @@ function Attendance() {
     }
   }
 
+  // // =========================
+  // // FETCH EMPLOYEES
+  // // =========================
+
+  // async function fetchEmployees() {
+  //   try {
+  //     // const token = localStorage.getItem("token");
+  //     const token = sessionStorage.getItem("token");
+
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_API_URL}/employees`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       },
+  //     );
+
   // =========================
   // FETCH EMPLOYEES
   // =========================
 
   async function fetchEmployees() {
     try {
-      // const token = localStorage.getItem("token");
       const token = sessionStorage.getItem("token");
 
       const response = await fetch(
@@ -122,6 +147,33 @@ function Attendance() {
     }
   }
 
+  //     const data = await response.json();
+
+  //     if (!response.ok) {
+  //       throw new Error(data.message || "Failed to fetch employees");
+  //     }
+
+  //     setEmployees(data.employees || []);
+  //   } catch (error) {
+  //     console.error("Fetch employees error:", error);
+  //     alert(error.message);
+  //   }
+  // }
+
+  //   const responseText = await response.text();
+
+  // console.log("UPDATE STATUS URL:", response.url);
+  // console.log("UPDATE STATUS STATUS:", response.status);
+  // console.log("UPDATE STATUS RESPONSE:", responseText);
+
+  // if (!response.ok) {
+  //   throw new Error(
+  //     `Request failed: ${response.status} ${response.statusText}`,
+  //   );
+  // }
+
+  // const data = JSON.parse(responseText);
+
   // =========================
   // MARK ABSENT
   // =========================
@@ -144,7 +196,6 @@ function Attendance() {
 
       // const token = localStorage.getItem("token");
       const token = sessionStorage.getItem("token");
-
 
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/attendance/absent`,
@@ -191,6 +242,135 @@ function Attendance() {
       setSavingAbsent(false);
     }
   }
+
+  // =========================
+  // UPDATE ATTENDANCE STATUS
+  // =========================
+
+  // async function handleUpdateStatus() {
+  //   if (!selectedAttendance) {
+  //     return;
+  //   }
+
+  //   if (!selectedStatus) {
+  //     alert("Please select a status");
+  //     return;
+  //   }
+
+  //   try {
+  //     setSavingStatus(true);
+
+  //     const token = sessionStorage.getItem("token");
+
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_API_URL}/attendance/${selectedAttendance._id}`,
+  //       {
+  //         method: "PUT",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         body: JSON.stringify({
+  //           status: selectedStatus,
+  //         }),
+  //       },
+  //     );
+
+  //     const data = await response.json();
+
+  //     if (!response.ok) {
+  //       throw new Error(data.message || "Failed to update attendance status");
+  //     }
+
+  //     alert("Attendance status updated successfully!");
+
+  //     setShowStatusModal(false);
+  //     setSelectedAttendance(null);
+  //     setSelectedStatus("");
+
+  //     await fetchAttendance();
+  //   } catch (error) {
+  //     console.error("Update attendance status error:", error);
+  //     alert(error.message);
+  //   } finally {
+  //     setSavingStatus(false);
+  //   }
+  // }
+
+  // =========================
+  // UPDATE ATTENDANCE STATUS
+  // =========================
+
+  async function handleUpdateStatus() {
+    if (!selectedAttendance) {
+      return;
+    }
+
+    if (!selectedStatus) {
+      alert("Please select a status");
+      return;
+    }
+
+    try {
+      setSavingStatus(true);
+
+      const token = sessionStorage.getItem("token");
+
+      console.log(
+        "UPDATE URL:",
+        `${import.meta.env.VITE_API_URL}/attendance/${selectedAttendance._id}`,
+      );
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/attendance/${selectedAttendance._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            status: selectedStatus,
+          }),
+        },
+      );
+
+      // const data = await response.json();
+
+      // if (!response.ok) {
+      //   throw new Error(data.message || "Failed to update attendance status");
+      // }
+
+      const responseText = await response.text();
+
+      console.log("UPDATE URL:", response.url);
+      console.log("UPDATE STATUS:", response.status);
+      console.log("UPDATE RESPONSE:", responseText);
+
+      if (!response.ok) {
+        throw new Error(
+          `Request failed: ${response.status} ${response.statusText}`,
+        );
+      }
+
+      const data = JSON.parse(responseText);
+
+      alert("Attendance status updated successfully!");
+
+      setShowStatusModal(false);
+      setSelectedAttendance(null);
+      setSelectedStatus("");
+
+      await fetchAttendance();
+    } catch (error) {
+      console.error("Update attendance status error:", error);
+      alert(error.message);
+    } finally {
+      setSavingStatus(false);
+    }
+  }
+
+  // =========================
 
   // =========================
   // WORKING HOURS
@@ -536,7 +716,7 @@ function Attendance() {
                       {calculateWorkingHours(record.checkIn, record.checkOut)}
                     </td>
 
-                    <td className="px-6 py-4">
+                    {/* <td className="px-6 py-4">
                       <span
                         className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold capitalize ${
                           record.status === "present"
@@ -550,6 +730,38 @@ function Attendance() {
                       >
                         {record.status}
                       </span>
+                    </td> */}
+
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <span
+                          className={`inline-flex whitespace-nowrap px-3 py-1 rounded-full text-xs font-semibold capitalize ${
+                            record.status === "present"
+                              ? "bg-green-100 text-green-700"
+                              : record.status === "absent"
+                                ? "bg-red-100 text-red-700"
+                                : record.status === "leave"
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-orange-100 text-orange-700"
+                          }`}
+                        >
+                          {record.status === "half-day"
+                            ? "Half Day"
+                            : record.status}
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedAttendance(record);
+                            setSelectedStatus(record.status);
+                            setShowStatusModal(true);
+                          }}
+                          className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                        >
+                          Change
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -665,6 +877,122 @@ function Attendance() {
                 <UserX size={17} />
 
                 {savingAbsent ? "Saving..." : "Mark Absent"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================
+    UPDATE STATUS MODAL
+========================= */}
+
+      {showStatusModal && selectedAttendance && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
+            {/* HEADER */}
+
+            <div className="flex items-center justify-between px-6 py-4 border-b">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-800">
+                  Update Attendance
+                </h2>
+
+                <p className="text-sm text-gray-500 mt-1">
+                  Change the attendance status.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowStatusModal(false);
+                  setSelectedAttendance(null);
+                  setSelectedStatus("");
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* BODY */}
+
+            <div className="p-6 space-y-5">
+              {/* EMPLOYEE */}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Employee
+                </label>
+
+                <input
+                  type="text"
+                  value={`${selectedAttendance.employee.employeeId} - ${selectedAttendance.employee.name}`}
+                  disabled
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-gray-100 text-gray-600"
+                />
+              </div>
+
+              {/* DATE */}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Date
+                </label>
+
+                <input
+                  type="text"
+                  value={formatDate(selectedAttendance.date)}
+                  disabled
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-gray-100 text-gray-600"
+                />
+              </div>
+
+              {/* STATUS */}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Status
+                </label>
+
+                <select
+                  value={selectedStatus}
+                  onChange={(e) => {
+                    setSelectedStatus(e.target.value);
+                  }}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="present">Present</option>
+                  <option value="absent">Absent</option>
+                  <option value="half-day">Half Day</option>
+                  <option value="leave">Leave</option>
+                </select>
+              </div>
+            </div>
+
+            {/* FOOTER */}
+
+            <div className="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50 rounded-b-xl">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowStatusModal(false);
+                  setSelectedAttendance(null);
+                  setSelectedStatus("");
+                }}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={handleUpdateStatus}
+                disabled={savingStatus}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition disabled:opacity-50"
+              >
+                {savingStatus ? "Updating..." : "Update Status"}
               </button>
             </div>
           </div>

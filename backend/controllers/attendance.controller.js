@@ -425,7 +425,6 @@
 //   checkOut,
 // };
 
-
 const Attendance = require("../models/attendance.model");
 const User = require("../models/user.model");
 
@@ -435,13 +434,9 @@ const TIME_ZONE = "Asia/Kolkata";
 // Helper: Get start and end of day in IST
 // ===============================
 const getDayRange = (dateValue) => {
-  const startOfDay = new Date(
-    `${dateValue}T00:00:00+05:30`
-  );
+  const startOfDay = new Date(`${dateValue}T00:00:00+05:30`);
 
-  const endOfDay = new Date(
-    `${dateValue}T23:59:59.999+05:30`
-  );
+  const endOfDay = new Date(`${dateValue}T23:59:59.999+05:30`);
 
   return {
     startOfDay,
@@ -478,14 +473,7 @@ const getCurrentTimeIST = () => {
 // ===============================
 const markAttendance = async (req, res) => {
   try {
-    const {
-      employee,
-      date,
-      status,
-      checkIn,
-      checkOut,
-      remarks,
-    } = req.body;
+    const {employee, date, status, checkIn, checkOut, remarks} = req.body;
 
     if (!employee || !date || !status) {
       return res.status(400).json({
@@ -501,7 +489,7 @@ const markAttendance = async (req, res) => {
       });
     }
 
-    const { startOfDay, endOfDay } = getDayRange(date);
+    const {startOfDay, endOfDay} = getDayRange(date);
 
     const existingAttendance = await Attendance.findOne({
       employee,
@@ -513,8 +501,7 @@ const markAttendance = async (req, res) => {
 
     if (existingAttendance) {
       return res.status(400).json({
-        message:
-          "Attendance already marked for this employee on this date",
+        message: "Attendance already marked for this employee on this date",
       });
     }
 
@@ -527,11 +514,9 @@ const markAttendance = async (req, res) => {
       remarks: remarks || "",
     });
 
-    const populatedAttendance =
-      await Attendance.findById(attendance._id).populate(
-        "employee",
-        "employeeId name email department designation"
-      );
+    const populatedAttendance = await Attendance.findById(
+      attendance._id,
+    ).populate("employee", "employeeId name email department designation");
 
     res.status(201).json({
       message: "Attendance marked successfully",
@@ -551,7 +536,7 @@ const markAttendance = async (req, res) => {
 // ===============================
 const markAbsent = async (req, res) => {
   try {
-    const { employeeId, date } = req.body;
+    const {employeeId, date} = req.body;
 
     if (!employeeId || !date) {
       return res.status(400).json({
@@ -567,7 +552,7 @@ const markAbsent = async (req, res) => {
       });
     }
 
-    const { startOfDay, endOfDay } = getDayRange(date);
+    const {startOfDay, endOfDay} = getDayRange(date);
 
     const existingAttendance = await Attendance.findOne({
       employee: employeeId,
@@ -592,11 +577,9 @@ const markAbsent = async (req, res) => {
       remarks: "Marked absent by admin",
     });
 
-    const populatedAttendance =
-      await Attendance.findById(attendance._id).populate(
-        "employee",
-        "employeeId name email department designation"
-      );
+    const populatedAttendance = await Attendance.findById(
+      attendance._id,
+    ).populate("employee", "employeeId name email department designation");
 
     res.status(201).json({
       message: "Employee marked absent successfully",
@@ -617,11 +600,8 @@ const markAbsent = async (req, res) => {
 const getAllAttendance = async (req, res) => {
   try {
     const attendance = await Attendance.find()
-      .populate(
-        "employee",
-        "employeeId name email department designation"
-      )
-      .sort({ date: -1 });
+      .populate("employee", "employeeId name email department designation")
+      .sort({date: -1});
 
     res.status(200).json({
       message: "Attendance fetched successfully",
@@ -642,16 +622,13 @@ const getAllAttendance = async (req, res) => {
 // ===============================
 const getEmployeeAttendance = async (req, res) => {
   try {
-    const { employeeId } = req.params;
+    const {employeeId} = req.params;
 
     const attendance = await Attendance.find({
       employee: employeeId,
     })
-      .populate(
-        "employee",
-        "employeeId name email department designation"
-      )
-      .sort({ date: -1 });
+      .populate("employee", "employeeId name email department designation")
+      .sort({date: -1});
 
     res.status(200).json({
       message: "Employee attendance fetched successfully",
@@ -659,10 +636,7 @@ const getEmployeeAttendance = async (req, res) => {
       attendance,
     });
   } catch (error) {
-    console.error(
-      "Get employee attendance error:",
-      error
-    );
+    console.error("Get employee attendance error:", error);
 
     res.status(500).json({
       message: "Server error",
@@ -745,8 +719,7 @@ const checkIn = async (req, res) => {
     const todayString = getTodayIST();
 
     // Get today's IST range
-    const { startOfDay, endOfDay } =
-      getDayRange(todayString);
+    const {startOfDay, endOfDay} = getDayRange(todayString);
 
     // Check if attendance already exists today
     const existingAttendance = await Attendance.findOne({
@@ -767,9 +740,7 @@ const checkIn = async (req, res) => {
     const checkInTime = getCurrentTimeIST();
 
     // Convert current time to minutes
-    const [hours, minutes] = checkInTime
-      .split(":")
-      .map(Number);
+    const [hours, minutes] = checkInTime.split(":").map(Number);
 
     const currentMinutes = hours * 60 + minutes;
 
@@ -778,8 +749,7 @@ const checkIn = async (req, res) => {
 
     // If employee checks in at or after 6:00 PM,
     // automatically set checkout to 6:00 PM.
-    const automaticCheckOut =
-      currentMinutes >= sixPM ? "18:00" : null;
+    const automaticCheckOut = currentMinutes >= sixPM ? "18:00" : null;
 
     // Create attendance
     const attendance = await Attendance.create({
@@ -791,19 +761,14 @@ const checkIn = async (req, res) => {
       remarks: "",
     });
 
-    const populatedAttendance =
-      await Attendance.findById(
-        attendance._id
-      ).populate(
-        "employee",
-        "employeeId name email department designation"
-      );
+    const populatedAttendance = await Attendance.findById(
+      attendance._id,
+    ).populate("employee", "employeeId name email department designation");
 
     res.status(201).json({
-      message:
-        automaticCheckOut
-          ? "Check-in successful. Checkout automatically set to 6:00 PM."
-          : "Check-in successful",
+      message: automaticCheckOut
+        ? "Check-in successful. Checkout automatically set to 6:00 PM."
+        : "Check-in successful",
       attendance: populatedAttendance,
     });
   } catch (error) {
@@ -826,18 +791,16 @@ const checkOut = async (req, res) => {
     const todayString = getTodayIST();
 
     // Get today's IST range
-    const { startOfDay, endOfDay } =
-      getDayRange(todayString);
+    const {startOfDay, endOfDay} = getDayRange(todayString);
 
     // Find today's attendance
-    const attendance =
-      await Attendance.findOne({
-        employee: employeeId,
-        date: {
-          $gte: startOfDay,
-          $lte: endOfDay,
-        },
-      });
+    const attendance = await Attendance.findOne({
+      employee: employeeId,
+      date: {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      },
+    });
 
     if (!attendance) {
       return res.status(404).json({
@@ -858,13 +821,9 @@ const checkOut = async (req, res) => {
 
     await attendance.save();
 
-    const populatedAttendance =
-      await Attendance.findById(
-        attendance._id
-      ).populate(
-        "employee",
-        "employeeId name email department designation"
-      );
+    const populatedAttendance = await Attendance.findById(
+      attendance._id,
+    ).populate("employee", "employeeId name email department designation");
 
     res.json({
       message: "Check-out successful",
@@ -932,11 +891,8 @@ const getMyAttendance = async (req, res) => {
     const attendance = await Attendance.find({
       employee: employeeId,
     })
-      .populate(
-        "employee",
-        "employeeId name email department designation"
-      )
-      .sort({ date: -1 });
+      .populate("employee", "employeeId name email department designation")
+      .sort({date: -1});
 
     res.status(200).json({
       message: "My attendance fetched successfully",
@@ -944,10 +900,73 @@ const getMyAttendance = async (req, res) => {
       attendance,
     });
   } catch (error) {
-    console.error(
-      "Get my attendance error:",
-      error
-    );
+    console.error("Get my attendance error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
+// ===============================
+// Admin: Update Attendance Status
+// ===============================
+const updateAttendanceStatus = async (req, res) => {
+  try {
+    const {attendanceId} = req.params;
+    const {status, remarks} = req.body;
+
+    // Allowed statuses
+    const allowedStatuses = ["present", "absent", "half-day", "leave"];
+
+    if (!status) {
+      return res.status(400).json({
+        message: "Status is required",
+      });
+    }
+
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        message: "Invalid attendance status",
+      });
+    }
+
+    // Find attendance record
+    const attendance = await Attendance.findById(attendanceId);
+
+    if (!attendance) {
+      return res.status(404).json({
+        message: "Attendance record not found",
+      });
+    }
+
+    // Update status
+    attendance.status = status;
+
+    // If marked absent or leave, remove check-in/check-out
+    if (status === "absent" || status === "leave") {
+      attendance.checkIn = null;
+      attendance.checkOut = null;
+    }
+
+    // If remarks are provided, update them
+    if (remarks !== undefined) {
+      attendance.remarks = remarks;
+    }
+
+    await attendance.save();
+
+    // Populate employee information
+    const populatedAttendance = await Attendance.findById(
+      attendance._id,
+    ).populate("employee", "employeeId name email department designation");
+
+    res.status(200).json({
+      message: "Attendance status updated successfully",
+      attendance: populatedAttendance,
+    });
+  } catch (error) {
+    console.error("Update attendance status error:", error);
 
     res.status(500).json({
       message: "Server error",
@@ -961,6 +980,7 @@ const getMyAttendance = async (req, res) => {
 module.exports = {
   markAttendance,
   markAbsent,
+  updateAttendanceStatus,
   getAllAttendance,
   getEmployeeAttendance,
   getMyAttendance,
