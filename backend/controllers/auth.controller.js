@@ -103,8 +103,7 @@ const login = async (req, res) => {
         expiresIn: "1d",
       },
     );
-    console.log("LOGIN JWT SECRET EXISTS:", !!process.env.JWT_SECRET);
-    console.log("LOGIN TOKEN CREATED:", !!token);
+   
 
     res.status(200).json({
       message: "Login successful",

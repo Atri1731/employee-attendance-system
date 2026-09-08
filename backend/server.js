@@ -16,14 +16,12 @@ const attendanceRoutes = require("./routes/attendance.routes");
 const leaveRoutes = require("./routes/leave.routes");
 const departmentRoutes = require("./routes/department.routes");
 const holidayRoutes = require("./routes/holiday.routes");
-const startAutoCheckoutJob = require("./jobs/autoCheckout");
 
 
 const app = express();
 
 connectDB();
 
-startAutoCheckoutJob();
 
 
 // app.use(

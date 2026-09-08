@@ -43,7 +43,6 @@
 
 // module.exports = protect;
 
-
 const jwt = require("jsonwebtoken");
 
 const protect = (req, res, next) => {
@@ -60,8 +59,7 @@ const protect = (req, res, next) => {
     // Get token
     const token = authHeader.split(" ")[1];
 
-    console.log("JWT SECRET EXISTS:", !!process.env.JWT_SECRET);
-    console.log("TOKEN RECEIVED:", !!token);
+    
 
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -72,7 +70,6 @@ const protect = (req, res, next) => {
     next();
   } catch (error) {
     console.error("JWT ERROR:", error.name, error.message);
-
     return res.status(401).json({
       message: "Invalid or expired token",
     });
