@@ -37,6 +37,12 @@ function Attendance() {
   const [absentDate, setAbsentDate] = useState("");
   const [savingAbsent, setSavingAbsent] = useState(false);
 
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const [selectedCheckoutAttendance, setSelectedCheckoutAttendance] =
+    useState(null);
+  const [checkoutTime, setCheckoutTime] = useState("");
+  const [savingCheckout, setSavingCheckout] = useState(false);
+
   // =========================
   // UPDATE ATTENDANCE STATES
   // =========================
@@ -335,6 +341,7 @@ function Attendance() {
         },
       );
 
+    
       // const data = await response.json();
 
       // if (!response.ok) {
@@ -370,7 +377,64 @@ function Attendance() {
     }
   }
 
-  // =========================
+// =========================
+// UPDATE CHECKOUT
+// =========================
+
+async function handleUpdateCheckout() {
+  if (!selectedCheckoutAttendance) {
+    return;
+  }
+
+  if (!checkoutTime) {
+    alert("Please select a checkout time");
+    return;
+  }
+
+  try {
+    setSavingCheckout(true);
+
+    const token = sessionStorage.getItem("token");
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/attendance/${selectedCheckoutAttendance._id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          status: selectedCheckoutAttendance.status,
+          checkOut: checkoutTime,
+        }),
+      },
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Failed to update checkout time",
+      );
+    }
+
+    alert("Checkout time updated successfully!");
+
+    setShowCheckoutModal(false);
+    setSelectedCheckoutAttendance(null);
+    setCheckoutTime("");
+
+    await fetchAttendance();
+  } catch (error) {
+    console.error("Update checkout error:", error);
+    alert(error.message);
+  } finally {
+    setSavingCheckout(false);
+  }
+}
+
+
 
   // =========================
   // WORKING HOURS
@@ -708,8 +772,27 @@ function Attendance() {
                       {record.checkIn || "-"}
                     </td>
 
-                    <td className="px-6 py-4 text-sm text-gray-700">
+                    {/* <td className="px-6 py-4 text-sm text-gray-700">
                       {record.checkOut || "-"}
+                    </td> */}
+                    <td className="px-6 py-4 text-sm text-gray-700">
+                      <div className="flex items-center gap-3 whitespace-nowrap">
+                        <span>{record.checkOut || "-"}</span>
+
+                        {record.status === "present" && record.checkOut && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedCheckoutAttendance(record);
+                              setCheckoutTime(record.checkOut);
+                              setShowCheckoutModal(true);
+                            }}
+                            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                          >
+                            Edit
+                          </button>
+                        )}
+                      </div>
                     </td>
 
                     <td className="px-6 py-4 text-sm text-gray-700">
@@ -993,6 +1076,115 @@ function Attendance() {
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition disabled:opacity-50"
               >
                 {savingStatus ? "Updating..." : "Update Status"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* =========================
+    EDIT CHECKOUT MODAL
+========================= */}
+
+      {showCheckoutModal && selectedCheckoutAttendance && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
+            {/* HEADER */}
+
+            <div className="flex items-center justify-between px-6 py-4 border-b">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-800">
+                  Edit Checkout Time
+                </h2>
+
+                <p className="text-sm text-gray-500 mt-1">
+                  Update the employee's actual checkout time.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowCheckoutModal(false);
+                  setSelectedCheckoutAttendance(null);
+                  setCheckoutTime("");
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* BODY */}
+
+            <div className="p-6 space-y-5">
+              {/* EMPLOYEE */}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Employee
+                </label>
+
+                <input
+                  type="text"
+                  value={`${selectedCheckoutAttendance.employee.employeeId} - ${selectedCheckoutAttendance.employee.name}`}
+                  disabled
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-gray-100 text-gray-600"
+                />
+              </div>
+
+              {/* DATE */}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Date
+                </label>
+
+                <input
+                  type="text"
+                  value={formatDate(selectedCheckoutAttendance.date)}
+                  disabled
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-gray-100 text-gray-600"
+                />
+              </div>
+
+              {/* CHECKOUT */}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Check Out Time
+                </label>
+
+                <input
+                  type="time"
+                  value={checkoutTime}
+                  onChange={(e) => setCheckoutTime(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            {/* FOOTER */}
+
+            <div className="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50 rounded-b-xl">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowCheckoutModal(false);
+                  setSelectedCheckoutAttendance(null);
+                  setCheckoutTime("");
+                }}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={handleUpdateCheckout}
+                disabled={savingCheckout}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition disabled:opacity-50"
+              >
+                {savingCheckout ? "Saving..." : "Save Checkout"}
               </button>
             </div>
           </div>

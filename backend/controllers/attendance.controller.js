@@ -644,9 +644,9 @@ const getEmployeeAttendance = async (req, res) => {
   }
 };
 
-// // ===============================
-// // Employee: Check In
-// // ===============================
+// ===============================
+// Employee: Check In
+// ===============================
 // const checkIn = async (req, res) => {
 //   try {
 //     const employeeId = req.user.id;
@@ -655,18 +655,16 @@ const getEmployeeAttendance = async (req, res) => {
 //     const todayString = getTodayIST();
 
 //     // Get today's IST range
-//     const { startOfDay, endOfDay } =
-//       getDayRange(todayString);
+//     const {startOfDay, endOfDay} = getDayRange(todayString);
 
 //     // Check if attendance already exists today
-//     const existingAttendance =
-//       await Attendance.findOne({
-//         employee: employeeId,
-//         date: {
-//           $gte: startOfDay,
-//           $lte: endOfDay,
-//         },
-//       });
+//     const existingAttendance = await Attendance.findOne({
+//       employee: employeeId,
+//       date: {
+//         $gte: startOfDay,
+//         $lte: endOfDay,
+//       },
+//     });
 
 //     if (existingAttendance) {
 //       return res.status(400).json({
@@ -677,26 +675,36 @@ const getEmployeeAttendance = async (req, res) => {
 //     // Get current time in India
 //     const checkInTime = getCurrentTimeIST();
 
+//     // Convert current time to minutes
+//     const [hours, minutes] = checkInTime.split(":").map(Number);
+
+//     const currentMinutes = hours * 60 + minutes;
+
+//     // 6:00 PM = 18:00 = 1080 minutes
+//     const sixPM = 18 * 60;
+
+//     // If employee checks in at or after 6:00 PM,
+//     // automatically set checkout to 6:00 PM.
+//     const automaticCheckOut = currentMinutes >= sixPM ? "18:00" : null;
+
 //     // Create attendance
 //     const attendance = await Attendance.create({
 //       employee: employeeId,
 //       date: startOfDay,
 //       status: "present",
 //       checkIn: checkInTime,
-//       checkOut: null,
+//       checkOut: automaticCheckOut,
 //       remarks: "",
 //     });
 
-//     const populatedAttendance =
-//       await Attendance.findById(
-//         attendance._id
-//       ).populate(
-//         "employee",
-//         "employeeId name email department designation"
-//       );
+//     const populatedAttendance = await Attendance.findById(
+//       attendance._id,
+//     ).populate("employee", "employeeId name email department designation");
 
 //     res.status(201).json({
-//       message: "Check-in successful",
+//       message: automaticCheckOut
+//         ? "Check-in successful. Checkout automatically set to 6:00 PM."
+//         : "Check-in successful",
 //       attendance: populatedAttendance,
 //     });
 //   } catch (error) {
@@ -739,17 +747,8 @@ const checkIn = async (req, res) => {
     // Get current time in India
     const checkInTime = getCurrentTimeIST();
 
-    // Convert current time to minutes
-    const [hours, minutes] = checkInTime.split(":").map(Number);
-
-    const currentMinutes = hours * 60 + minutes;
-
-    // 6:00 PM = 18:00 = 1080 minutes
-    const sixPM = 18 * 60;
-
-    // If employee checks in at or after 6:00 PM,
-    // automatically set checkout to 6:00 PM.
-    const automaticCheckOut = currentMinutes >= sixPM ? "18:00" : null;
+    // Default checkout time
+    const defaultCheckOut = "18:00";
 
     // Create attendance
     const attendance = await Attendance.create({
@@ -757,7 +756,7 @@ const checkIn = async (req, res) => {
       date: startOfDay,
       status: "present",
       checkIn: checkInTime,
-      checkOut: automaticCheckOut,
+      checkOut: defaultCheckOut,
       remarks: "",
     });
 
@@ -766,9 +765,7 @@ const checkIn = async (req, res) => {
     ).populate("employee", "employeeId name email department designation");
 
     res.status(201).json({
-      message: automaticCheckOut
-        ? "Check-in successful. Checkout automatically set to 6:00 PM."
-        : "Check-in successful",
+      message: "Check-in successful",
       attendance: populatedAttendance,
     });
   } catch (error) {
@@ -779,6 +776,64 @@ const checkIn = async (req, res) => {
     });
   }
 };
+
+// ===============================
+// Employee: Check Out
+// ===============================
+// const checkOut = async (req, res) => {
+//   try {
+//     const employeeId = req.user.id;
+
+//     // Get today's date in India
+//     const todayString = getTodayIST();
+
+//     // Get today's IST range
+//     const {startOfDay, endOfDay} = getDayRange(todayString);
+
+//     // Find today's attendance
+//     const attendance = await Attendance.findOne({
+//       employee: employeeId,
+//       date: {
+//         $gte: startOfDay,
+//         $lte: endOfDay,
+//       },
+//     });
+
+//     if (!attendance) {
+//       return res.status(404).json({
+//         message: "You have not checked in today",
+//       });
+//     }
+
+//     if (attendance.checkOut) {
+//       return res.status(400).json({
+//         message: "You have already checked out today",
+//       });
+//     }
+
+//     // Get current time in India
+//     const checkOutTime = getCurrentTimeIST();
+
+//     attendance.checkOut = checkOutTime;
+
+//     await attendance.save();
+
+//     const populatedAttendance = await Attendance.findById(
+//       attendance._id,
+//     ).populate("employee", "employeeId name email department designation");
+
+//     res.json({
+//       message: "Check-out successful",
+//       attendance: populatedAttendance,
+//     });
+//   } catch (error) {
+//     console.error("Check-out error:", error);
+
+//     res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// };
 
 // ===============================
 // Employee: Check Out
@@ -808,22 +863,41 @@ const checkOut = async (req, res) => {
       });
     }
 
-    if (attendance.checkOut) {
+    // Employee must have Present status
+    if (attendance.status !== "present") {
       return res.status(400).json({
-        message: "You have already checked out today",
+        message: "You cannot check out for this attendance status",
       });
     }
 
     // Get current time in India
     const checkOutTime = getCurrentTimeIST();
 
+    // If checkout is already an actual time,
+    // don't allow another checkout.
+    //
+    // 18:00 is treated as the default checkout time,
+    // so employee can still check out before or after 6 PM.
+    if (
+      attendance.checkOut &&
+      attendance.checkOut !== "18:00"
+    ) {
+      return res.status(400).json({
+        message: "You have already checked out today",
+      });
+    }
+
+    // Save actual checkout time
     attendance.checkOut = checkOutTime;
 
     await attendance.save();
 
     const populatedAttendance = await Attendance.findById(
       attendance._id,
-    ).populate("employee", "employeeId name email department designation");
+    ).populate(
+      "employee",
+      "employeeId name email department designation",
+    );
 
     res.json({
       message: "Check-out successful",
@@ -914,7 +988,7 @@ const getMyAttendance = async (req, res) => {
 const updateAttendanceStatus = async (req, res) => {
   try {
     const {attendanceId} = req.params;
-    const {status, remarks} = req.body;
+    const {status, remarks, checkOut} = req.body;
 
     // Allowed statuses
     const allowedStatuses = ["present", "absent", "half-day", "leave"];
@@ -952,6 +1026,11 @@ const updateAttendanceStatus = async (req, res) => {
     // If remarks are provided, update them
     if (remarks !== undefined) {
       attendance.remarks = remarks;
+    }
+
+    // If checkOut is provided, update it
+    if (checkOut !== undefined) {
+      attendance.checkOut = checkOut || null;
     }
 
     await attendance.save();
