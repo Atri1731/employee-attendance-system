@@ -278,14 +278,23 @@ function Payroll() {
                   </th>
 
                   <th className="px-5 py-4 text-center text-sm font-semibold text-gray-600">
-                    Payable Days
-                  </th>
+  Payable Days
+</th>
 
-                  <th className="px-5 py-4 text-right text-sm font-semibold text-gray-600">
-                    Final Salary
-                  </th>
+<th className="px-5 py-4 text-center text-sm font-semibold text-gray-600">
+  Total Hours
+</th>
 
-                  <th className="px-5 py-4 text-center text-sm font-semibold text-gray-600">
+<th className="px-5 py-4 text-right text-sm font-semibold text-gray-600">
+  Hourly Rate
+</th>
+
+<th className="px-5 py-4 text-right text-sm font-semibold text-gray-600">
+  Final Salary
+</th>
+
+
+                 <th className="px-5 py-4 text-center text-sm font-semibold text-gray-600">
                     Action
                   </th>
 
@@ -370,18 +379,27 @@ function Payroll() {
                         {item.attendance.absentDays}
                       </td>
 
-                      {/* Payable Days */}
-                      <td className="px-5 py-4 text-center font-semibold text-gray-700">
-                        {item.payableDays}
-                      </td>
+                   {/* Payable Days */}
+<td className="px-5 py-4 text-center font-semibold text-gray-700">
+  {item.payableDays}
+</td>
 
-                      {/* Final Salary */}
-                      <td className="px-5 py-4 text-right font-bold text-blue-600">
-                        ₹
-                        {item.calculatedSalary?.toLocaleString(
-                          "en-IN"
-                        )}
-                      </td>
+{/* Total Working Hours */}
+<td className="px-5 py-4 text-center font-medium text-gray-700">
+  {item.totalWorkingHours ?? 0}h
+</td>
+
+{/* Hourly Rate */}
+<td className="px-5 py-4 text-right font-medium text-gray-700">
+  ₹
+  {item.hourlyRate?.toLocaleString("en-IN")}
+</td>
+
+{/* Final Salary */}
+<td className="px-5 py-4 text-right font-bold text-blue-600">
+  ₹
+  {item.calculatedSalary?.toLocaleString("en-IN")}
+</td>
 
                       {/* Action */}
                       <td className="px-5 py-4">
