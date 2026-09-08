@@ -1,13 +1,6 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {
-  Wallet,
-  Users,
-  IndianRupee,
-  Pencil,
-  X,
-  Check,
-} from "lucide-react";
+import {Wallet, Users, IndianRupee, Pencil, X, Check} from "lucide-react";
 
 function Payroll() {
   const [payroll, setPayroll] = useState([]);
@@ -40,7 +33,7 @@ function Payroll() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       const data = response.data;
@@ -52,10 +45,7 @@ function Payroll() {
     } catch (error) {
       console.error("Payroll error:", error);
 
-      setError(
-        error.response?.data?.message ||
-          "Failed to load payroll"
-      );
+      setError(error.response?.data?.message || "Failed to load payroll");
     } finally {
       setLoading(false);
     }
@@ -76,11 +66,7 @@ function Payroll() {
 
   // Save salary
   const handleSaveSalary = async (employeeId) => {
-    if (
-      salaryInput === "" ||
-      salaryInput === null ||
-      Number(salaryInput) < 0
-    ) {
+    if (salaryInput === "" || salaryInput === null || Number(salaryInput) < 0) {
       setError("Please enter a valid salary.");
       return;
     }
@@ -101,7 +87,7 @@ function Payroll() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       // Refresh payroll data after salary update
@@ -112,10 +98,7 @@ function Payroll() {
     } catch (error) {
       console.error("Update salary error:", error);
 
-      setError(
-        error.response?.data?.message ||
-          "Failed to update salary"
-      );
+      setError(error.response?.data?.message || "Failed to update salary");
     } finally {
       setSaving(false);
     }
@@ -128,14 +111,12 @@ function Payroll() {
     : "";
 
   const totalSalary = payroll.reduce(
-    (total, item) =>
-      total + (item.calculatedSalary || 0),
-    0
+    (total, item) => total + (item.calculatedSalary || 0),
+    0,
   );
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
@@ -149,14 +130,11 @@ function Payroll() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
-
         {/* Total Employees */}
         <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">
-                Total Employees
-              </p>
+              <p className="text-sm text-gray-500">Total Employees</p>
 
               <h2 className="text-2xl font-bold text-gray-800 mt-1">
                 {totalEmployees}
@@ -164,10 +142,7 @@ function Payroll() {
             </div>
 
             <div className="p-3 bg-blue-50 rounded-lg">
-              <Users
-                className="text-blue-600"
-                size={24}
-              />
+              <Users className="text-blue-600" size={24} />
             </div>
           </div>
         </div>
@@ -176,9 +151,7 @@ function Payroll() {
         <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">
-                Total Payable Salary
-              </p>
+              <p className="text-sm text-gray-500">Total Payable Salary</p>
 
               <h2 className="text-2xl font-bold text-gray-800 mt-1">
                 ₹{totalSalary.toLocaleString("en-IN")}
@@ -186,10 +159,7 @@ function Payroll() {
             </div>
 
             <div className="p-3 bg-green-50 rounded-lg">
-              <IndianRupee
-                className="text-green-600"
-                size={24}
-              />
+              <IndianRupee className="text-green-600" size={24} />
             </div>
           </div>
         </div>
@@ -198,9 +168,7 @@ function Payroll() {
         <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">
-                Payroll Month
-              </p>
+              <p className="text-sm text-gray-500">Payroll Month</p>
 
               <h2 className="text-2xl font-bold text-gray-800 mt-1">
                 {monthName} {year}
@@ -208,10 +176,7 @@ function Payroll() {
             </div>
 
             <div className="p-3 bg-purple-50 rounded-lg">
-              <Wallet
-                className="text-purple-600"
-                size={24}
-              />
+              <Wallet className="text-purple-600" size={24} />
             </div>
           </div>
         </div>
@@ -226,7 +191,6 @@ function Payroll() {
 
       {/* Payroll Table */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-
         <div className="p-5 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-800">
             Employee Payroll
@@ -243,77 +207,67 @@ function Payroll() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-
-            <table className="w-full min-w-[1100px]">
-
+            <table className="w-full min-w-[1500px] table-fixed">
               <thead className="bg-gray-50">
                 <tr>
-
-                  <th className="px-5 py-4 text-left text-sm font-semibold text-gray-600">
+                  <th className="w-[180px] px-5 py-4 text-left text-sm font-semibold text-gray-600">
                     Employee
                   </th>
 
-                  <th className="px-5 py-4 text-left text-sm font-semibold text-gray-600">
+                  <th className="w-[150px] px-5 py-4 text-left text-sm font-semibold text-gray-600">
                     Department
                   </th>
 
-                  <th className="px-5 py-4 text-left text-sm font-semibold text-gray-600">
+                  <th className="w-[150px] px-5 py-4 text-left text-sm font-semibold text-gray-600">
                     Designation
                   </th>
 
-                  <th className="px-5 py-4 text-right text-sm font-semibold text-gray-600">
+                  <th className="w-[150px] px-5 py-4 text-right text-sm font-semibold text-gray-600">
                     Monthly Salary
                   </th>
 
-                  <th className="px-5 py-4 text-center text-sm font-semibold text-gray-600">
+                  <th className="w-[100px] px-5 py-4 text-center text-sm font-semibold text-gray-600">
                     Present
                   </th>
 
-                  <th className="px-5 py-4 text-center text-sm font-semibold text-gray-600">
+                  <th className="w-[110px] px-5 py-4 text-center text-sm font-semibold text-gray-600">
                     Half Days
                   </th>
 
-                  <th className="px-5 py-4 text-center text-sm font-semibold text-gray-600">
+                  <th className="w-[100px] px-5 py-4 text-center text-sm font-semibold text-gray-600">
                     Absent
                   </th>
 
-                  <th className="px-5 py-4 text-center text-sm font-semibold text-gray-600">
-  Payable Days
-</th>
-
-<th className="px-5 py-4 text-center text-sm font-semibold text-gray-600">
-  Total Hours
-</th>
-
-<th className="px-5 py-4 text-right text-sm font-semibold text-gray-600">
-  Hourly Rate
-</th>
-
-<th className="px-5 py-4 text-right text-sm font-semibold text-gray-600">
-  Final Salary
-</th>
-
-
-                 <th className="px-5 py-4 text-center text-sm font-semibold text-gray-600">
-                    Action
+                  <th className="w-[130px] px-5 py-4 text-center text-sm font-semibold text-gray-600">
+                    Payable Days
                   </th>
 
+                  <th className="w-[130px] px-5 py-4 text-center text-sm font-semibold text-gray-600">
+                    Total Hours
+                  </th>
+
+                  <th className="w-[130px] px-5 py-4 text-right text-sm font-semibold text-gray-600">
+                    Hourly Rate
+                  </th>
+
+                  <th className="w-[150px] px-5 py-4 text-right text-sm font-semibold text-gray-600">
+                    Final Salary
+                  </th>
+
+                  <th className="w-[120px] px-5 py-4 text-center text-sm font-semibold text-gray-600">
+                    Action
+                  </th>
                 </tr>
               </thead>
-
               <tbody className="divide-y divide-gray-100">
-
                 {payroll.map((item) => {
-
-                  const isEditing =
-                    editingId === item.employee.id;
+                  const isEditing = editingId === item.employee.id;
 
                   return (
                     <tr
                       key={item.employee.id}
                       className="hover:bg-gray-50 transition"
                     >
-
                       {/* Employee */}
                       <td className="px-5 py-4">
                         <div>
@@ -339,29 +293,20 @@ function Payroll() {
 
                       {/* Monthly Salary */}
                       <td className="px-5 py-4 text-right">
-
                         {isEditing ? (
                           <input
                             type="number"
                             min="0"
                             value={salaryInput}
-                            onChange={(e) =>
-                              setSalaryInput(
-                                e.target.value
-                              )
-                            }
+                            onChange={(e) => setSalaryInput(e.target.value)}
                             className="w-32 px-3 py-2 border border-blue-400 rounded-lg text-right outline-none focus:ring-2 focus:ring-blue-200"
                             autoFocus
                           />
                         ) : (
                           <span className="font-medium text-gray-800">
-                            ₹
-                            {item.monthlySalary?.toLocaleString(
-                              "en-IN"
-                            )}
+                            ₹{item.monthlySalary?.toLocaleString("en-IN")}
                           </span>
                         )}
-
                       </td>
 
                       {/* Present */}
@@ -379,85 +324,64 @@ function Payroll() {
                         {item.attendance.absentDays}
                       </td>
 
-                   {/* Payable Days */}
-<td className="px-5 py-4 text-center font-semibold text-gray-700">
-  {item.payableDays}
-</td>
+                      {/* Payable Days */}
+                      <td className="px-5 py-4 text-center font-semibold text-gray-700">
+                        {item.payableDays}
+                      </td>
 
-{/* Total Working Hours */}
-<td className="px-5 py-4 text-center font-medium text-gray-700">
-  {item.totalWorkingHours ?? 0}h
-</td>
+                      {/* Total Working Hours */}
+                      <td className="px-5 py-4 text-center font-medium text-gray-700">
+                        {item.totalWorkingHours ?? 0}h
+                      </td>
 
-{/* Hourly Rate */}
-<td className="px-5 py-4 text-right font-medium text-gray-700">
-  ₹
-  {item.hourlyRate?.toLocaleString("en-IN")}
-</td>
+                      {/* Hourly Rate */}
+                      <td className="px-5 py-4 text-right font-medium text-gray-700">
+                        ₹{item.hourlyRate?.toLocaleString("en-IN")}
+                      </td>
 
-{/* Final Salary */}
-<td className="px-5 py-4 text-right font-bold text-blue-600">
-  ₹
-  {item.calculatedSalary?.toLocaleString("en-IN")}
-</td>
+                      {/* Final Salary */}
+                      <td className="px-5 py-4 text-right font-bold text-blue-600">
+                        ₹{item.calculatedSalary?.toLocaleString("en-IN")}
+                      </td>
 
                       {/* Action */}
                       <td className="px-5 py-4">
-
                         {isEditing ? (
                           <div className="flex items-center justify-center gap-2">
-
                             <button
-                              onClick={() =>
-                                handleSaveSalary(
-                                  item.employee.id
-                                )
-                              }
+                              onClick={() => handleSaveSalary(item.employee.id)}
                               disabled={saving}
                               className="flex items-center gap-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition"
                             >
                               <Check size={16} />
 
-                              {saving
-                                ? "Saving..."
-                                : "Save"}
+                              {saving ? "Saving..." : "Save"}
                             </button>
 
                             <button
-                              onClick={
-                                handleCancelEdit
-                              }
+                              onClick={handleCancelEdit}
                               disabled={saving}
                               className="flex items-center gap-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 transition"
                             >
                               <X size={16} />
-
                               Cancel
                             </button>
-
                           </div>
                         ) : (
                           <button
-                            onClick={() =>
-                              handleEditSalary(item)
-                            }
+                            onClick={() => handleEditSalary(item)}
                             className="flex items-center gap-1 mx-auto px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                           >
                             <Pencil size={16} />
-
                             Edit
                           </button>
                         )}
-
                       </td>
-
                     </tr>
                   );
                 })}
-
               </tbody>
             </table>
-
           </div>
         )}
       </div>

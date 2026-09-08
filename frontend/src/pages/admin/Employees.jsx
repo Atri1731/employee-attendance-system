@@ -5,6 +5,9 @@ import {useNavigate} from "react-router-dom";
 const Employees = () => {
   const navigate = useNavigate();
 
+const [showDetailsModal, setShowDetailsModal] = useState(false);
+const [selectedEmployee, setSelectedEmployee] = useState(null);
+
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("");
@@ -399,9 +402,16 @@ const [statusFilter, setStatusFilter] = useState("");
                     >
                       <td className="px-6 py-4">
                         <div>
-                          <p className="font-semibold text-gray-800">
-                            {employee.name}
-                          </p>
+                          <button
+  type="button"
+  onClick={() => {
+    setSelectedEmployee(employee);
+    setShowDetailsModal(true);
+  }}
+  className="font-semibold text-blue-600 hover:text-blue-800 hover:underline text-left"
+>
+  {employee.name}
+</button>
 
                           <p className="text-sm text-gray-400">
                             {employee.employeeId}
@@ -474,8 +484,8 @@ const [statusFilter, setStatusFilter] = useState("");
       {/* ========================= */}
 
       {showEditModal && editingEmployee && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg">
+       <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+  <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b">
               <div>
@@ -618,6 +628,146 @@ const [statusFilter, setStatusFilter] = useState("");
           </div>
         </div>
       )}
+      {/* ========================= */}
+{/* EMPLOYEE DETAILS MODAL */}
+{/* ========================= */}
+
+{showDetailsModal && selectedEmployee && (
+  <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+    <div className="bg-white rounded-xl shadow-xl w-full max-w-lg">
+
+      {/* Modal Header */}
+      <div className="flex items-center justify-between px-6 py-4 border-b">
+        <div>
+          <h2 className="text-xl font-bold text-gray-800">
+            Employee Details
+          </h2>
+
+          <p className="text-sm text-gray-500 mt-1">
+            View employee information
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            setShowDetailsModal(false);
+            setSelectedEmployee(null);
+          }}
+          className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      {/* Employee Details */}
+      <div className="p-6 overflow-y-auto">
+
+        {/* Employee Name */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl font-bold">
+            {selectedEmployee.name?.charAt(0).toUpperCase()}
+          </div>
+
+          <div>
+            <h3 className="text-lg font-bold text-gray-800">
+              {selectedEmployee.name}
+            </h3>
+
+            <p className="text-sm text-gray-500">
+              {selectedEmployee.employeeId}
+            </p>
+          </div>
+        </div>
+
+        {/* Details Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+          <div className="bg-gray-50 rounded-lg p-3">
+            <p className="text-xs text-gray-500 mb-1">
+              Email
+            </p>
+            <p className="font-medium text-gray-800 break-all">
+              {selectedEmployee.email || "—"}
+            </p>
+          </div>
+
+          <div className="bg-gray-50 rounded-lg p-3">
+            <p className="text-xs text-gray-500 mb-1">
+              Phone
+            </p>
+            <p className="font-medium text-gray-800">
+              {selectedEmployee.phone || "—"}
+            </p>
+          </div>
+
+          <div className="bg-gray-50 rounded-lg p-3">
+            <p className="text-xs text-gray-500 mb-1">
+              Department
+            </p>
+            <p className="font-medium text-gray-800">
+              {selectedEmployee.department || "—"}
+            </p>
+          </div>
+
+          <div className="bg-gray-50 rounded-lg p-3">
+            <p className="text-xs text-gray-500 mb-1">
+              Designation
+            </p>
+            <p className="font-medium text-gray-800">
+              {selectedEmployee.designation || "—"}
+            </p>
+          </div>
+
+          <div className="bg-gray-50 rounded-lg p-3">
+            <p className="text-xs text-gray-500 mb-1">
+              Joining Date
+            </p>
+            <p className="font-medium text-gray-800">
+              {selectedEmployee.joiningDate
+                ? new Date(
+                    selectedEmployee.joiningDate
+                  ).toLocaleDateString("en-GB")
+                : "—"}
+            </p>
+          </div>
+
+          <div className="bg-gray-50 rounded-lg p-3">
+            <p className="text-xs text-gray-500 mb-1">
+              Status
+            </p>
+
+            <span
+              className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
+                selectedEmployee.status === "active"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
+              {selectedEmployee.status}
+            </span>
+          </div>
+
+        </div>
+
+        {/* Close Button */}
+        <div className="flex justify-end mt-6">
+          <button
+            type="button"
+            onClick={() => {
+              setShowDetailsModal(false);
+              setSelectedEmployee(null);
+            }}
+            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold"
+          >
+            Close
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };

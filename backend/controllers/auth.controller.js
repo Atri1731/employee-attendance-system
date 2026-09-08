@@ -103,6 +103,8 @@ const login = async (req, res) => {
         expiresIn: "1d",
       },
     );
+    console.log("LOGIN JWT SECRET EXISTS:", !!process.env.JWT_SECRET);
+    console.log("LOGIN TOKEN CREATED:", !!token);
 
     res.status(200).json({
       message: "Login successful",
@@ -180,8 +182,8 @@ const forgotPassword = async (req, res) => {
 // RESET PASSWORD
 const resetPassword = async (req, res) => {
   try {
-    const { token } = req.params;
-    const { password } = req.body;
+    const {token} = req.params;
+    const {password} = req.body;
 
     if (!token) {
       return res.status(400).json({
@@ -202,15 +204,12 @@ const resetPassword = async (req, res) => {
     }
 
     // Hash the token received from the reset link
-    const hashedToken = crypto
-      .createHash("sha256")
-      .update(token)
-      .digest("hex");
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     // Find user with matching token that has not expired
     const user = await User.findOne({
       resetPasswordToken: hashedToken,
-      resetPasswordExpires: { $gt: Date.now() },
+      resetPasswordExpires: {$gt: Date.now()},
     });
 
     if (!user) {

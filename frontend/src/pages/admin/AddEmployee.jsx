@@ -210,7 +210,6 @@ function AddEmployee() {
       // const token = localStorage.getItem("token");
       const token = sessionStorage.getItem("token");
 
-
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/departments`,
         {
@@ -254,7 +253,9 @@ function AddEmployee() {
     try {
       setLoading(true);
 
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/employees`,
