@@ -78,6 +78,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/leaves", leaveRoutes);
+const notificationRoutes = require("./routes/notification.routes");
+app.use("/api/notifications", notificationRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/holidays", holidayRoutes);
 

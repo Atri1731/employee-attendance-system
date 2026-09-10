@@ -1,25 +1,10 @@
-// import {Outlet} from "react-router-dom";
-// import Sidebar from "../components/Sidebar";
-
-// function EmployeeLayout() {
-//   return (
-//     <div className="min-h-screen bg-gray-50 flex">
-//       <Sidebar role="employee" />
-
-//       <main className="flex-1">
-//         <Outlet />
-//       </main>
-//     </div>
-//   );
-// }
-
-// export default EmployeeLayout;
 
 
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import Sidebar from "../components/Sidebar";
+import NotificationBell from "../components/NotificationBell";
 
 function EmployeeLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -27,19 +12,25 @@ function EmployeeLayout() {
   return (
     <div className="min-h-screen bg-gray-50">
 
-      {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between bg-white px-4 py-3 border-b border-gray-200 sticky top-0 z-40">
-        <h1 className="text-lg font-bold text-blue-600">
-          Employee Attendance
-        </h1>
+     {/* Mobile Header */}
+<div className="md:hidden flex items-center justify-between bg-white px-4 py-3 border-b border-gray-200 sticky top-0 z-40">
 
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="p-2 rounded-lg text-gray-700 hover:bg-gray-100"
-        >
-          <Menu size={24} />
-        </button>
-      </div>
+  <h1 className="text-lg font-bold text-blue-600">
+    Employee Attendance
+  </h1>
+
+  <div className="flex items-center gap-2">
+    <NotificationBell />
+
+    <button
+      onClick={() => setSidebarOpen(true)}
+      className="p-2 rounded-lg text-gray-700 hover:bg-gray-100"
+    >
+      <Menu size={24} />
+    </button>
+  </div>
+
+</div>
 
       <div className="flex min-h-screen">
 
@@ -74,10 +65,17 @@ function EmployeeLayout() {
           </div>
         )}
 
-        {/* Main Content */}
-        <main className="flex-1 min-w-0 w-full overflow-x-hidden  md:ml-64">
-          <Outlet />
-        </main>
+      {/* Main Content */}
+<main className="flex-1 min-w-0 w-full overflow-x-hidden md:ml-64">
+
+  {/* Desktop Top Header */}
+  <div className="hidden md:flex h-16 bg-white border-b border-gray-200 items-center justify-end px-6 sticky top-0 z-30">
+    <NotificationBell />
+  </div>
+
+  <Outlet />
+
+</main>
 
       </div>
     </div>

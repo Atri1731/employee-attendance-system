@@ -1,135 +1,3 @@
-// function LeaveManagement() {
-//   return (
-//     <div className="p-6 bg-blue-100 min-h-screen">
-
-//       {/* Page Header */}
-//       <div className="mb-6 text-center">
-//         <h1 className="text-2xl font-bold text-gray-800">
-//           Leave Management
-//         </h1>
-
-//         <p className="text-gray-500 mt-1">
-//           Review and manage employee leave requests.
-//         </p>
-//       </div>
-
-//       {/* Filters */}
-//       <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
-
-//         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-//           {/* Search */}
-//           <input
-//             type="text"
-//             placeholder="Search employee..."
-//             className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-//           />
-
-//           {/* Leave Type */}
-//           <select className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500">
-//             <option value="">All Leave Types</option>
-//             <option value="casual">Casual Leave</option>
-//             <option value="medical">Medical Leave</option>
-//             <option value="annual">Annual Leave</option>
-//             <option value="other">Other</option>
-//           </select>
-
-//           {/* Status */}
-//           <select className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500">
-//             <option value="">All Status</option>
-//             <option value="pending">Pending</option>
-//             <option value="approved">Approved</option>
-//             <option value="rejected">Rejected</option>
-//           </select>
-
-//         </div>
-
-//       </div>
-
-//       {/* Leave Requests */}
-//       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-
-//         <div className="p-5 border-b border-gray-200 text-center">
-//           <h2 className="text-lg font-semibold text-gray-800">
-//             Leave Requests
-//           </h2>
-//         </div>
-
-//         <div className="overflow-x-auto">
-
-//           <table className="w-full">
-
-//             <thead className="bg-gray-50 border-b border-gray-200">
-
-//               <tr>
-
-//                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
-//                   Employee
-//                 </th>
-
-//                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
-//                   Leave Type
-//                 </th>
-
-//                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
-//                   From
-//                 </th>
-
-//                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
-//                   To
-//                 </th>
-
-//                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
-//                   Reason
-//                 </th>
-
-//                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
-//                   Status
-//                 </th>
-
-//                 <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
-//                   Actions
-//                 </th>
-
-//               </tr>
-
-//             </thead>
-
-//             <tbody>
-
-//               {/* Empty State */}
-//               <tr>
-
-//                 <td
-//                   colSpan="7"
-//                   className="px-6 py-16 text-center"
-//                 >
-
-//                   <p className="text-lg font-medium text-gray-400">
-//                     No leave requests found
-//                   </p>
-
-//                   <p className="text-sm text-gray-400 mt-1">
-//                     Employee leave requests will appear here.
-//                   </p>
-
-//                 </td>
-
-//               </tr>
-
-//             </tbody>
-
-//           </table>
-
-//         </div>
-
-//       </div>
-
-//     </div>
-//   );
-// }
-
-// export default LeaveManagement;
 
 
 import { useEffect, useState } from "react";
@@ -149,7 +17,7 @@ function LeaveManagement() {
   // Fetch all leave requests
   const fetchLeaves = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/leaves`,
@@ -180,7 +48,7 @@ function LeaveManagement() {
   // Approve / Reject leave
   const updateLeaveStatus = async (id, newStatus) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/leaves/${id}/status`,

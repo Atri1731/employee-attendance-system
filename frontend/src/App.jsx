@@ -9,6 +9,7 @@ import Signup from "./pages/Signup";
 
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Notifications from "./pages/Notifications";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -40,6 +41,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/notifications" element={<Notifications />} />
+        
         {/* ================= ADMIN ================= */}
 
         <Route path="/admin" element={<AdminLayout />}>

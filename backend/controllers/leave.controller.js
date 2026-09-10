@@ -1,4 +1,6 @@
 const Leave = require("../models/leave.model");
+const User = require("../models/user.model");
+const Notification = require("../models/notification.model");
 
 // Employee applies for leave
 const applyLeave = async (req, res) => {
@@ -24,6 +26,30 @@ const applyLeave = async (req, res) => {
       toDate,
       reason,
     });
+
+    // Get employee name
+    const employee = await User.findById(req.user.id).select(
+      "name"
+    );
+
+    // Get all active admins
+    const admins = await User.find({
+      role: "admin",
+      status: "active",
+    }).select("_id");
+
+    // Create notification for admins
+    if (admins.length > 0) {
+      await Notification.insertMany(
+        admins.map((admin) => ({
+          recipient: admin._id,
+          type: "leave_request",
+          title: "New Leave Request",
+          message: `${employee?.name || "An employee"} submitted a ${leaveType} leave request from ${new Date(fromDate).toLocaleDateString("en-IN")} to ${new Date(toDate).toLocaleDateString("en-IN")}.`,
+          relatedLeave: leave._id,
+        }))
+      );
+    }
 
     res.status(201).json({
       message: "Leave request submitted successfully",
@@ -92,6 +118,7 @@ const getAllLeaves = async (req, res) => {
 
 
 // Admin approves/rejects leave
+// Admin approves/rejects leave
 const updateLeaveStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -114,6 +141,39 @@ const updateLeaveStatus = async (req, res) => {
 
     await leave.save();
 
+    const formattedFromDate = new Date(
+      leave.fromDate
+    ).toLocaleDateString("en-IN");
+
+    const formattedToDate = new Date(
+      leave.toDate
+    ).toLocaleDateString("en-IN");
+
+    const leaveType =
+      leave.leaveType.charAt(0).toUpperCase() +
+      leave.leaveType.slice(1);
+
+    await Notification.create({
+      recipient: leave.employee,
+
+      type:
+        status === "approved"
+          ? "leave_approved"
+          : "leave_rejected",
+
+      title:
+        status === "approved"
+          ? "Leave Approved"
+          : "Leave Rejected",
+
+      message:
+        status === "approved"
+          ? `Your ${leaveType} leave request from ${formattedFromDate} to ${formattedToDate} has been approved.`
+          : `Your ${leaveType} leave request from ${formattedFromDate} to ${formattedToDate} has been rejected.`,
+
+      relatedLeave: leave._id,
+    });
+
     res.status(200).json({
       message: `Leave request ${status} successfully`,
       leave,
@@ -126,7 +186,6 @@ const updateLeaveStatus = async (req, res) => {
     });
   }
 };
-
 
 module.exports = {
   applyLeave,
