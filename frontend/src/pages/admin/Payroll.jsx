@@ -4,8 +4,18 @@ import {Wallet, Users, IndianRupee, Pencil, X, Check} from "lucide-react";
 
 function Payroll() {
   const [payroll, setPayroll] = useState([]);
-  const [month, setMonth] = useState("");
-  const [year, setYear] = useState("");
+
+  const currentDate = new Date();
+
+  const [month, setMonth] = useState(currentDate.getMonth() + 1);
+
+  const [year, setYear] = useState(currentDate.getFullYear());
+
+  const [selectedMonth, setSelectedMonth] = useState(
+    currentDate.getMonth() + 1,
+  );
+
+  const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
   const [totalEmployees, setTotalEmployees] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -16,20 +26,26 @@ function Payroll() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    fetchPayroll();
-  }, []);
+    fetchPayroll(selectedMonth, selectedYear);
+  }, [selectedMonth, selectedYear]);
 
-  const fetchPayroll = async () => {
+  const fetchPayroll = async (
+    selectedMonthValue = selectedMonth,
+    selectedYearValue = selectedYear,
+  ) => {
     try {
       setLoading(true);
       setError("");
 
-      // const token = localStorage.getItem("token");
       const token = sessionStorage.getItem("token");
-
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/payroll`,
-        {
+const response = await axios.get(
+  `${import.meta.env.VITE_API_URL}/payroll`,
+  {
+    params: {
+      month: selectedMonthValue,
+      year: selectedYearValue,
+      _t: Date.now(),
+    },
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -165,19 +181,58 @@ function Payroll() {
         </div>
 
         {/* Payroll Month */}
+        {/* Payroll Month Selector */}
         <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm text-gray-500">Payroll Month</p>
 
-              <h2 className="text-2xl font-bold text-gray-800 mt-1">
-                {monthName} {year}
-              </h2>
+              <p className="text-sm text-gray-400 mt-1">
+                Select month and year
+              </p>
             </div>
 
             <div className="p-3 bg-purple-50 rounded-lg">
               <Wallet className="text-purple-600" size={24} />
             </div>
+          </div>
+
+          <div className="flex gap-3">
+            {/* Month */}
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(Number(e.target.value))}
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 outline-none focus:ring-2 focus:ring-purple-200"
+            >
+              <option value={1}>January</option>
+              <option value={2}>February</option>
+              <option value={3}>March</option>
+              <option value={4}>April</option>
+              <option value={5}>May</option>
+              <option value={6}>June</option>
+              <option value={7}>July</option>
+              <option value={8}>August</option>
+              <option value={9}>September</option>
+              <option value={10}>October</option>
+              <option value={11}>November</option>
+              <option value={12}>December</option>
+            </select>
+
+            {/* Year */}
+            <select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 outline-none focus:ring-2 focus:ring-purple-200"
+            >
+              {Array.from(
+                {length: 21},
+                (_, index) => new Date().getFullYear() - 10 + index,
+              ).map((yearOption) => (
+                <option key={yearOption} value={yearOption}>
+                  {yearOption}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </div>

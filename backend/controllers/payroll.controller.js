@@ -41,16 +41,20 @@ const getEmployeePayroll = async (req, res) => {
       });
     }
 
-    // Current month
     const now = new Date();
 
-    const year = now.getFullYear();
-    const month = now.getMonth();
+    const requestedMonth = Number(req.query.month);
+    const requestedYear = Number(req.query.year);
 
-    // First day of current month
+    const year = requestedYear || now.getFullYear();
+
+    const month =
+      requestedMonth >= 1 && requestedMonth <= 12
+        ? requestedMonth - 1
+        : now.getMonth();
+
     const startDate = new Date(year, month, 1);
 
-    // First day of next month
     const endDate = new Date(year, month + 1, 1);
 
     // Get attendance for current month
@@ -80,11 +84,7 @@ const getEmployeePayroll = async (req, res) => {
     ).length;
 
     // Number of days in current month
-    const totalDaysInMonth = new Date(
-      year,
-      month + 1,
-      0,
-    ).getDate();
+    const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
 
     // // Salary calculation
     // const monthlySalary = employee.salary || 0;
@@ -100,35 +100,27 @@ const getEmployeePayroll = async (req, res) => {
     // const calculatedSalary = payableDays * perDaySalary;
 
     // Salary calculation based on working hours
-const monthlySalary = employee.salary || 0;
+    const monthlySalary = employee.salary || 0;
 
-const perDaySalary = monthlySalary / totalDaysInMonth;
+    const perDaySalary = monthlySalary / totalDaysInMonth;
 
-const hourlyRate =
-  perDaySalary / STANDARD_WORKING_HOURS;
+    const hourlyRate = perDaySalary / STANDARD_WORKING_HOURS;
 
-let totalWorkingHours = 0;
+    let totalWorkingHours = 0;
 
-attendance.forEach((item) => {
-  const hours = calculateWorkingHours(
-    item.checkIn,
-    item.checkOut,
-  );
+    attendance.forEach((item) => {
+      const hours = calculateWorkingHours(item.checkIn, item.checkOut);
 
-  if (item.status === "present") {
-    totalWorkingHours += hours;
-  }
+      if (item.status === "present") {
+        totalWorkingHours += hours;
+      }
 
-  if (item.status === "half-day") {
-    totalWorkingHours += Math.min(
-      hours,
-      STANDARD_WORKING_HOURS / 2,
-    );
-  }
-});
+      if (item.status === "half-day") {
+        totalWorkingHours += Math.min(hours, STANDARD_WORKING_HOURS / 2);
+      }
+    });
 
-const calculatedSalary =
-  totalWorkingHours * hourlyRate;
+    const calculatedSalary = totalWorkingHours * hourlyRate;
 
     res.status(200).json({
       message: "Payroll fetched successfully",
@@ -154,30 +146,20 @@ const calculatedSalary =
         // },
 
         salary: {
-  monthlySalary,
+          monthlySalary,
 
-  perDaySalary: Number(
-    perDaySalary.toFixed(2),
-  ),
+          perDaySalary: Number(perDaySalary.toFixed(2)),
 
-  hourlyRate: Number(
-    hourlyRate.toFixed(2),
-  ),
+          hourlyRate: Number(hourlyRate.toFixed(2)),
 
-  totalWorkingHours: Number(
-    totalWorkingHours.toFixed(2),
-  ),
+          totalWorkingHours: Number(totalWorkingHours.toFixed(2)),
 
-  payableDays: Number(
-    (
-      totalWorkingHours / STANDARD_WORKING_HOURS
-    ).toFixed(2),
-  ),
+          payableDays: Number(
+            (totalWorkingHours / STANDARD_WORKING_HOURS).toFixed(2),
+          ),
 
-  calculatedSalary: Number(
-    calculatedSalary.toFixed(2),
-  ),
-},
+          calculatedSalary: Number(calculatedSalary.toFixed(2)),
+        },
 
         attendance: {
           totalDaysInMonth,
@@ -204,19 +186,36 @@ const getAllPayroll = async (req, res) => {
       role: "employee",
     }).select("-password");
 
-    const now = new Date();
+   const now = new Date();
 
-    const year = now.getFullYear();
-    const month = now.getMonth();
+const requestedMonth = Number(req.query.month);
+const requestedYear = Number(req.query.year);
 
-    const startDate = new Date(year, month, 1);
-    const endDate = new Date(year, month + 1, 1);
+const year =
+  requestedYear || now.getFullYear();
 
-    const totalDaysInMonth = new Date(
-      year,
-      month + 1,
-      0,
-    ).getDate();
+const month =
+  requestedMonth >= 1 && requestedMonth <= 12
+    ? requestedMonth - 1
+    : now.getMonth();
+
+const startDate = new Date(
+  year,
+  month,
+  1,
+);
+
+const endDate = new Date(
+  year,
+  month + 1,
+  1,
+);
+
+const totalDaysInMonth = new Date(
+  year,
+  month + 1,
+  0,
+).getDate();
 
     const payroll = [];
 
@@ -244,39 +243,29 @@ const getAllPayroll = async (req, res) => {
       const leaveDays = attendance.filter(
         (item) => item.status === "leave",
       ).length;
-const monthlySalary = employee.salary || 0;
+      const monthlySalary = employee.salary || 0;
 
-const perDaySalary =
-  monthlySalary / totalDaysInMonth;
+      const perDaySalary = monthlySalary / totalDaysInMonth;
 
-const hourlyRate =
-  perDaySalary / STANDARD_WORKING_HOURS;
+      const hourlyRate = perDaySalary / STANDARD_WORKING_HOURS;
 
-let totalWorkingHours = 0;
+      let totalWorkingHours = 0;
 
-attendance.forEach((item) => {
-  const hours = calculateWorkingHours(
-    item.checkIn,
-    item.checkOut,
-  );
+      attendance.forEach((item) => {
+        const hours = calculateWorkingHours(item.checkIn, item.checkOut);
 
-  if (item.status === "present") {
-    totalWorkingHours += hours;
-  }
+        if (item.status === "present") {
+          totalWorkingHours += hours;
+        }
 
-  if (item.status === "half-day") {
-    totalWorkingHours += Math.min(
-      hours,
-      STANDARD_WORKING_HOURS / 2,
-    );
-  }
-});
+        if (item.status === "half-day") {
+          totalWorkingHours += Math.min(hours, STANDARD_WORKING_HOURS / 2);
+        }
+      });
 
-const calculatedSalary =
-  totalWorkingHours * hourlyRate;
+      const calculatedSalary = totalWorkingHours * hourlyRate;
 
-const payableDays =
-  totalWorkingHours / STANDARD_WORKING_HOURS;
+      const payableDays = totalWorkingHours / STANDARD_WORKING_HOURS;
 
       payroll.push({
         employee: {
@@ -296,21 +285,13 @@ const payableDays =
           leaveDays,
         },
 
-     payableDays: Number(
-  payableDays.toFixed(2),
-),
+        payableDays: Number(payableDays.toFixed(2)),
 
-totalWorkingHours: Number(
-  totalWorkingHours.toFixed(2),
-),
+        totalWorkingHours: Number(totalWorkingHours.toFixed(2)),
 
-hourlyRate: Number(
-  hourlyRate.toFixed(2),
-),
+        hourlyRate: Number(hourlyRate.toFixed(2)),
 
-calculatedSalary: Number(
-  calculatedSalary.toFixed(2),
-),
+        calculatedSalary: Number(calculatedSalary.toFixed(2)),
       });
     }
 
