@@ -1,6 +1,11 @@
 import {useEffect, useState} from "react";
-import {Wallet, CalendarDays, CheckCircle} from "lucide-react";
-
+import {
+  Wallet,
+  CalendarDays,
+  CheckCircle,
+  Download,
+} from "lucide-react";
+import jsPDF from "jspdf";
 function MySalary() {
   const [payroll, setPayroll] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -8,6 +13,200 @@ function MySalary() {
   useEffect(() => {
     fetchMyPayroll();
   }, []);
+
+  const generateSalarySlip = () => {
+  if (!payroll) return;
+
+  const doc = new jsPDF();
+
+  const employee = payroll.employee || {};
+  const salary = payroll.salary || {};
+
+  const month = payroll.month;
+  const year = payroll.year;
+
+  const monthName = month
+    ? new Date(year, month - 1).toLocaleString("default", {
+        month: "long",
+      })
+    : "";
+
+  const monthlySalary = salary.monthlySalary || 0;
+  const workedSalary = salary.workedSalary || 0;
+  const paidLeaveDays = salary.paidLeaveDays || 0;
+  const unpaidLeaveDays = salary.unpaidLeaveDays || 0;
+  const paidLeaveSalary = salary.paidLeaveSalary || 0;
+  const unpaidLeaveDeduction = salary.unpaidLeaveDeduction || 0;
+  const finalSalary = salary.calculatedSalary || 0;
+
+  // Header
+  doc.setFontSize(22);
+  doc.setFont("helvetica", "bold");
+
+  doc.text("SALARY SLIP", 105, 25, {
+    align: "center",
+  });
+
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "normal");
+
+  doc.text(`${monthName} ${year}`, 105, 33, {
+    align: "center",
+  });
+
+  doc.line(20, 40, 190, 40);
+
+  // Employee Details
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+
+  doc.text("Employee Details", 20, 52);
+
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "normal");
+
+  doc.text(`Employee Name: ${employee.name || "-"}`, 20, 62);
+  doc.text(`Employee ID: ${employee.employeeId || "-"}`, 20, 70);
+  doc.text(`Department: ${employee.department || "-"}`, 20, 78);
+  doc.text(`Designation: ${employee.designation || "-"}`, 20, 86);
+
+  // Salary Details
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+
+  doc.text("Salary Details", 20, 102);
+
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "normal");
+
+  doc.text(
+    `Monthly Salary: Rs. ${monthlySalary.toLocaleString("en-IN")}`,
+    20,
+    112
+  );
+
+  doc.text(
+    `Per Day Salary: Rs. ${(salary.perDaySalary || 0).toFixed(2)}`,
+    20,
+    120
+  );
+
+  doc.text(
+    `Hourly Rate: Rs. ${(salary.hourlyRate || 0).toFixed(2)}`,
+    20,
+    128
+  );
+
+  // Attendance
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+
+  doc.text("Attendance", 20, 144);
+
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "normal");
+
+  doc.text(
+    `Present Days: ${payroll.attendance?.presentDays || 0}`,
+    20,
+    154
+  );
+
+  doc.text(
+    `Half Days: ${payroll.attendance?.halfDays || 0}`,
+    20,
+    162
+  );
+
+  doc.text(
+    `Absent Days: ${payroll.attendance?.absentDays || 0}`,
+    20,
+    170
+  );
+
+  doc.text(
+    `Paid Leave: ${paidLeaveDays} day(s)`,
+    20,
+    178
+  );
+
+  doc.text(
+    `Unpaid Leave: ${unpaidLeaveDays} day(s)`,
+    20,
+    186
+  );
+
+  doc.text(
+    `Total Working Hours: ${salary.totalWorkingHours || 0} hours`,
+    20,
+    194
+  );
+
+  // Salary Calculation
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+
+  doc.text("Salary Calculation", 20, 210);
+
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "normal");
+
+  doc.text(
+    `Worked Salary: Rs. ${workedSalary.toLocaleString("en-IN")}`,
+    20,
+    220
+  );
+
+  doc.text(
+    `Paid Leave Salary: Rs. ${paidLeaveSalary.toLocaleString("en-IN")}`,
+    20,
+    228
+  );
+
+  doc.text(
+    `Unpaid Leave Deduction: Rs. ${unpaidLeaveDeduction.toLocaleString(
+      "en-IN"
+    )}`,
+    20,
+    236
+  );
+
+  // Net Salary
+  doc.line(20, 245, 190, 245);
+
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+
+  doc.text(
+    `NET SALARY: Rs. ${finalSalary.toLocaleString("en-IN")}`,
+    20,
+    258
+  );
+
+  doc.line(20, 265, 190, 265);
+
+  // Footer
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+
+  doc.text(
+    "This is a system-generated salary slip.",
+    105,
+    280,
+    {
+      align: "center",
+    }
+  );
+
+  const safeName = (employee.name || "employee")
+    .replace(/\s+/g, "_")
+    .replace(/[^a-zA-Z0-9_-]/g, "");
+
+  doc.save(
+    `Salary_Slip_${safeName}_${monthName}_${year}.pdf`
+  );
+};
+
 
 //   const fetchMyPayroll = async () => {
 //     try {
@@ -149,22 +348,36 @@ const url = `${import.meta.env.VITE_API_URL}/payroll/me`;
           <p className="text-gray-500">{payroll.employee?.designation}</p>
         </div>
 
-        {/* Salary Card */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-xl bg-green-50 flex items-center justify-center">
-              <Wallet size={28} className="text-green-600" />
-            </div>
+ {/* Salary Card */}
+<div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
+  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
 
-            <div>
-              <p className="text-sm text-gray-500">Net Salary</p>
+    {/* Net Salary */}
+    <div className="flex items-center gap-4">
+      <div className="w-14 h-14 rounded-xl bg-green-50 flex items-center justify-center">
+        <Wallet size={28} className="text-green-600" />
+      </div>
 
-              <h2 className="text-3xl font-bold text-gray-800 mt-1">
-                ₹{netSalary.toLocaleString("en-IN")}
-              </h2>
-            </div>
-          </div>
-        </div>
+      <div>
+        <p className="text-sm text-gray-500">Net Salary</p>
+
+        <h2 className="text-3xl font-bold text-gray-800 mt-1">
+          ₹{netSalary.toLocaleString("en-IN")}
+        </h2>
+      </div>
+    </div>
+
+    {/* Download Button */}
+    <button
+      onClick={generateSalarySlip}
+      className="flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
+    >
+      <Download size={18} />
+      Download Salary Slip
+    </button>
+
+  </div>
+</div>
 
         {/* Payroll Details */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">

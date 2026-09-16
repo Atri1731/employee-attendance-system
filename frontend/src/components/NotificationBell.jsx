@@ -1,13 +1,8 @@
 import {useEffect, useRef, useState} from "react";
-import {Bell, CheckCheck,  ChevronRight} from "lucide-react";
+import {Bell, CheckCheck, ChevronRight} from "lucide-react";
 import {useNavigate} from "react-router-dom";
 
-
-import {
-  FileText,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import {FileText, CheckCircle, XCircle} from "lucide-react";
 
 function NotificationBell() {
   const [notifications, setNotifications] = useState([]);
@@ -132,36 +127,36 @@ function NotificationBell() {
   }, []);
 
   const getNotificationIcon = (type) => {
-  if (type === "leave_approved") {
+    if (type === "leave_approved") {
+      return (
+        <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+          <CheckCircle size={16} className="text-green-600" />
+        </div>
+      );
+    }
+
+    if (type === "leave_rejected") {
+      return (
+        <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+          <XCircle size={16} className="text-red-600" />
+        </div>
+      );
+    }
+
+    if (type === "leave_request") {
+      return (
+        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+          <FileText size={16} className="text-blue-600" />
+        </div>
+      );
+    }
+
     return (
-      <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
-        <CheckCircle size={16} className="text-green-600" />
+      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+        <Bell size={16} className="text-gray-600" />
       </div>
     );
-  }
-
-  if (type === "leave_rejected") {
-    return (
-      <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
-        <XCircle size={16} className="text-red-600" />
-      </div>
-    );
-  }
-
-  if (type === "leave_request") {
-    return (
-      <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-        <FileText size={16} className="text-blue-600" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
-      <Bell size={16} className="text-gray-600" />
-    </div>
-  );
-};
+  };
 
   return (
     <div ref={notificationRef} className="relative">
@@ -181,7 +176,7 @@ function NotificationBell() {
 
       {/* Dropdown */}
       {open && (
-       <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+        <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
             <div>
@@ -224,12 +219,11 @@ function NotificationBell() {
                     !notification.isRead ? "bg-blue-50" : "bg-white"
                   }`}
                 >
-   <div className="flex gap-3">
+                  <div className="flex gap-3">
+                    {/* Notification Icon */}
+                    {getNotificationIcon(notification.type)}
 
-  {/* Notification Icon */}
-  {getNotificationIcon(notification.type)}
-
-  <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-gray-800">
                         {notification.title}
                       </p>
@@ -248,7 +242,7 @@ function NotificationBell() {
                 </button>
               ))
             )}
-                 </div>
+          </div>
 
           {/* View All Notifications */}
           {notifications.length > 5 && (
@@ -265,7 +259,6 @@ function NotificationBell() {
           )}
         </div>
       )}
-      
     </div>
   );
 }

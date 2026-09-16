@@ -1,6 +1,15 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {Wallet, Users, IndianRupee, Pencil, X, Check} from "lucide-react";
+import {
+  Wallet,
+  Users,
+  IndianRupee,
+  Pencil,
+  X,
+  Check,
+  Download,
+} from "lucide-react";
+import jsPDF from "jspdf";
 
 function Payroll() {
   const [payroll, setPayroll] = useState([]);
@@ -38,14 +47,14 @@ function Payroll() {
       setError("");
 
       const token = sessionStorage.getItem("token");
-const response = await axios.get(
-  `${import.meta.env.VITE_API_URL}/payroll`,
-  {
-    params: {
-      month: selectedMonthValue,
-      year: selectedYearValue,
-      _t: Date.now(),
-    },
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/payroll`,
+        {
+          params: {
+            month: selectedMonthValue,
+            year: selectedYearValue,
+            _t: Date.now(),
+          },
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -130,6 +139,146 @@ const response = await axios.get(
     (total, item) => total + (item.calculatedSalary || 0),
     0,
   );
+
+  const generateSalarySlip = (item) => {
+    const doc = new jsPDF();
+
+    const employee = item.employee;
+
+    const salary = item.monthlySalary || 0;
+    const workedSalary = item.workedSalary || 0;
+    const paidLeaveDays = item.paidLeaveDays || 0;
+    const unpaidLeaveDays = item.unpaidLeaveDays || 0;
+    const paidLeaveSalary = item.paidLeaveSalary || 0;
+    const unpaidLeaveDeduction = item.unpaidLeaveDeduction || 0;
+    const finalSalary = item.calculatedSalary || 0;
+
+    // Header
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text("SALARY SLIP", 105, 25, {
+      align: "center",
+    });
+
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text(`${monthName} ${year}`, 105, 33, {
+      align: "center",
+    });
+
+    // Line
+    doc.line(20, 40, 190, 40);
+
+    // Employee Details
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Employee Details", 20, 52);
+
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+
+    doc.text(`Employee Name: ${employee.name || "-"}`, 20, 62);
+    doc.text(`Employee ID: ${employee.employeeId || "-"}`, 20, 70);
+    doc.text(`Department: ${employee.department || "-"}`, 20, 78);
+    doc.text(`Designation: ${employee.designation || "-"}`, 20, 86);
+
+    // Salary Details
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Salary Details", 20, 102);
+
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+
+    doc.text(`Monthly Salary: Rs. ${salary.toLocaleString("en-IN")}`, 20, 112);
+
+    doc.text(
+      `Per Day Salary: Rs. ${(salary / (item.attendance?.totalDaysInMonth || 30)).toFixed(2)}`,
+      20,
+      120,
+    );
+
+    doc.text(
+      `Hourly Rate: Rs. ${(item.hourlyRate || 0).toLocaleString("en-IN")}`,
+      20,
+      128,
+    );
+
+    // Attendance
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Attendance", 20, 144);
+
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+
+    doc.text(`Present Days: ${item.attendance?.presentDays || 0}`, 20, 154);
+
+    doc.text(`Half Days: ${item.attendance?.halfDays || 0}`, 20, 162);
+
+    doc.text(`Absent Days: ${item.attendance?.absentDays || 0}`, 20, 170);
+
+    doc.text(`Paid Leave: ${paidLeaveDays} day(s)`, 20, 178);
+
+    doc.text(`Unpaid Leave: ${unpaidLeaveDays} day(s)`, 20, 186);
+
+    doc.text(
+      `Total Working Hours: ${item.totalWorkingHours || 0} hours`,
+      20,
+      194,
+    );
+
+    // Salary Calculation
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Salary Calculation", 20, 210);
+
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+
+    doc.text(
+      `Worked Salary: Rs. ${workedSalary.toLocaleString("en-IN")}`,
+      20,
+      220,
+    );
+
+    doc.text(
+      `Paid Leave Salary: Rs. ${paidLeaveSalary.toLocaleString("en-IN")}`,
+      20,
+      228,
+    );
+
+    doc.text(
+      `Unpaid Leave Deduction: Rs. ${unpaidLeaveDeduction.toLocaleString("en-IN")}`,
+      20,
+      236,
+    );
+
+    // Final Salary Box
+    doc.line(20, 245, 190, 245);
+
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+
+    doc.text(`NET SALARY: Rs. ${finalSalary.toLocaleString("en-IN")}`, 20, 258);
+
+    doc.line(20, 265, 190, 265);
+
+    // Footer
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+
+    doc.text("This is a system-generated salary slip.", 105, 280, {
+      align: "center",
+    });
+
+    // Download
+    const safeName = (employee.name || "employee")
+      .replace(/\s+/g, "_")
+      .replace(/[^a-zA-Z0-9_-]/g, "");
+
+    doc.save(`Salary_Slip_${safeName}_${monthName}_${year}.pdf`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
@@ -262,7 +411,7 @@ const response = await axios.get(
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[1500px] table-fixed">
+            <table className="w-full min-w-[1900px] table-fixed">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="w-[180px] px-5 py-4 text-left text-sm font-semibold text-gray-600">
@@ -292,7 +441,17 @@ const response = await axios.get(
                   <th className="w-[100px] px-5 py-4 text-center text-sm font-semibold text-gray-600">
                     Absent
                   </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
+                    Paid Leave
+                  </th>
 
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
+                    Unpaid Leave
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
+                    Deduction
+                  </th>
                   <th className="w-[130px] px-5 py-4 text-center text-sm font-semibold text-gray-600">
                     Payable Days
                   </th>
@@ -379,6 +538,20 @@ const response = await axios.get(
                         {item.attendance.absentDays}
                       </td>
 
+                      <td className="px-6 py-4 text-sm text-green-600 font-semibold">
+                        {item.paidLeaveDays || 0}
+                      </td>
+
+                      <td className="px-6 py-4 text-sm text-red-600 font-semibold">
+                        {item.unpaidLeaveDays || 0}
+                      </td>
+
+                      <td className="px-6 py-4 text-sm text-red-600 font-semibold">
+                        ₹
+                        {(item.unpaidLeaveDeduction || 0).toLocaleString(
+                          "en-IN",
+                        )}
+                      </td>
                       {/* Payable Days */}
                       <td className="px-5 py-4 text-center font-semibold text-gray-700">
                         {item.payableDays}
@@ -423,13 +596,23 @@ const response = await axios.get(
                             </button>
                           </div>
                         ) : (
-                          <button
-                            onClick={() => handleEditSalary(item)}
-                            className="flex items-center gap-1 mx-auto px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                          >
-                            <Pencil size={16} />
-                            Edit
-                          </button>
+                          <div className="flex items-center justify-center gap-2">
+                            <button
+                              onClick={() => handleEditSalary(item)}
+                              className="flex items-center gap-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                            >
+                              <Pencil size={16} />
+                              Edit
+                            </button>
+
+                            <button
+                              onClick={() => generateSalarySlip(item)}
+                              className="flex items-center gap-1 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+                            >
+                              <Download size={16} />
+                              Slip
+                            </button>
+                          </div>
                         )}
                       </td>
                     </tr>

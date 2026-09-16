@@ -14,6 +14,12 @@ const leaveSchema = new mongoose.Schema(
       required: true,
     },
 
+    leavePayment: {
+      type: String,
+      enum: ["paid", "unpaid"],
+      default: "unpaid",
+    },
+
     fromDate: {
       type: Date,
       required: true,

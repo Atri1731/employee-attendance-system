@@ -5,7 +5,7 @@ const Notification = require("../models/notification.model");
 // Employee applies for leave
 const applyLeave = async (req, res) => {
   try {
-    const { leaveType, fromDate, toDate, reason } = req.body;
+    const {leaveType, fromDate, toDate, reason} = req.body;
 
     if (!leaveType || !fromDate || !toDate || !reason) {
       return res.status(400).json({
@@ -28,9 +28,7 @@ const applyLeave = async (req, res) => {
     });
 
     // Get employee name
-    const employee = await User.findById(req.user.id).select(
-      "name"
-    );
+    const employee = await User.findById(req.user.id).select("name");
 
     // Get all active admins
     const admins = await User.find({
@@ -47,7 +45,7 @@ const applyLeave = async (req, res) => {
           title: "New Leave Request",
           message: `${employee?.name || "An employee"} submitted a ${leaveType} leave request from ${new Date(fromDate).toLocaleDateString("en-IN")} to ${new Date(toDate).toLocaleDateString("en-IN")}.`,
           relatedLeave: leave._id,
-        }))
+        })),
       );
     }
 
@@ -64,18 +62,14 @@ const applyLeave = async (req, res) => {
   }
 };
 
-
 // Employee views their own leaves
 const getMyLeaves = async (req, res) => {
   try {
     const leaves = await Leave.find({
       employee: req.user.id,
     })
-      .populate(
-        "employee",
-        "employeeId name email department designation"
-      )
-      .sort({ createdAt: -1 });
+      .populate("employee", "employeeId name email department designation")
+      .sort({createdAt: -1});
 
     res.status(200).json({
       message: "My leaves fetched successfully",
@@ -91,16 +85,12 @@ const getMyLeaves = async (req, res) => {
   }
 };
 
-
 // Admin views all leave requests
 const getAllLeaves = async (req, res) => {
   try {
     const leaves = await Leave.find()
-      .populate(
-        "employee",
-        "employeeId name email department designation"
-      )
-      .sort({ createdAt: -1 });
+      .populate("employee", "employeeId name email department designation")
+      .sort({createdAt: -1});
 
     res.status(200).json({
       message: "All leaves fetched successfully",
@@ -116,12 +106,11 @@ const getAllLeaves = async (req, res) => {
   }
 };
 
-
 // Admin approves/rejects leave
 // Admin approves/rejects leave
 const updateLeaveStatus = async (req, res) => {
   try {
-    const { status } = req.body;
+    const {status, leavePayment} = req.body;
 
     if (!["approved", "rejected"].includes(status)) {
       return res.status(400).json({
@@ -129,6 +118,11 @@ const updateLeaveStatus = async (req, res) => {
       });
     }
 
+    if (status === "approved" && !["paid", "unpaid"].includes(leavePayment)) {
+      return res.status(400).json({
+        message: "Please select paid or unpaid leave",
+      });
+    }
     const leave = await Leave.findById(req.params.id);
 
     if (!leave) {
@@ -136,35 +130,28 @@ const updateLeaveStatus = async (req, res) => {
         message: "Leave request not found",
       });
     }
+leave.status = status;
 
-    leave.status = status;
+if (status === "approved") {
+  leave.leavePayment = leavePayment;
+}
 
-    await leave.save();
+await leave.save();
+    const formattedFromDate = new Date(leave.fromDate).toLocaleDateString(
+      "en-IN",
+    );
 
-    const formattedFromDate = new Date(
-      leave.fromDate
-    ).toLocaleDateString("en-IN");
-
-    const formattedToDate = new Date(
-      leave.toDate
-    ).toLocaleDateString("en-IN");
+    const formattedToDate = new Date(leave.toDate).toLocaleDateString("en-IN");
 
     const leaveType =
-      leave.leaveType.charAt(0).toUpperCase() +
-      leave.leaveType.slice(1);
+      leave.leaveType.charAt(0).toUpperCase() + leave.leaveType.slice(1);
 
     await Notification.create({
       recipient: leave.employee,
 
-      type:
-        status === "approved"
-          ? "leave_approved"
-          : "leave_rejected",
+      type: status === "approved" ? "leave_approved" : "leave_rejected",
 
-      title:
-        status === "approved"
-          ? "Leave Approved"
-          : "Leave Rejected",
+      title: status === "approved" ? "Leave Approved" : "Leave Rejected",
 
       message:
         status === "approved"

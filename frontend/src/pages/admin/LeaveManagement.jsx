@@ -10,6 +10,10 @@ function LeaveManagement() {
   const [leaveType, setLeaveType] = useState("");
   const [status, setStatus] = useState("");
 
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+const [selectedLeave, setSelectedLeave] = useState(null);
+const [selectedPayment, setSelectedPayment] = useState("paid");
+
   useEffect(() => {
     fetchLeaves();
   }, []);
@@ -46,7 +50,11 @@ function LeaveManagement() {
   };
 
   // Approve / Reject leave
-  const updateLeaveStatus = async (id, newStatus) => {
+ const updateLeaveStatus = async (
+  id,
+  newStatus,
+  leavePayment = null
+) => {
     try {
       const token = sessionStorage.getItem("token");
 
@@ -58,9 +66,12 @@ function LeaveManagement() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            status: newStatus,
-          }),
+body: JSON.stringify({
+  status: newStatus,
+  ...(newStatus === "approved" && {
+    leavePayment,
+  }),
+}),
         }
       );
 
@@ -82,6 +93,25 @@ function LeaveManagement() {
       alert(error.message);
     }
   };
+
+  const openApprovalModal = (leave) => {
+  setSelectedLeave(leave);
+  setSelectedPayment("paid");
+  setShowPaymentModal(true);
+};
+
+const handleApproveLeave = async () => {
+  if (!selectedLeave) return;
+
+  await updateLeaveStatus(
+    selectedLeave._id,
+    "approved",
+    selectedPayment
+  );
+
+  setShowPaymentModal(false);
+  setSelectedLeave(null);
+};
 
   // Filter leaves
   const filteredLeaves = leaves.filter((leave) => {
@@ -341,12 +371,7 @@ function LeaveManagement() {
                         <div className="flex gap-2">
 
                           <button
-                            onClick={() =>
-                              updateLeaveStatus(
-                                leave._id,
-                                "approved"
-                              )
-                            }
+                          onClick={() => openApprovalModal(leave)}
                             className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs font-semibold transition"
                           >
                             Approve
@@ -389,6 +414,98 @@ function LeaveManagement() {
         </div>
 
       </div>
+      
+      {showPaymentModal && selectedLeave && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+      
+      <h2 className="text-xl font-bold text-gray-900">
+        Approve Leave
+      </h2>
+
+      <p className="mt-2 text-sm text-gray-500">
+        Select whether this leave should be paid or unpaid.
+      </p>
+
+      <div className="mt-5 space-y-3">
+
+        {/* Paid */}
+        <label
+          className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition ${
+            selectedPayment === "paid"
+              ? "border-green-500 bg-green-50"
+              : "border-gray-200 hover:bg-gray-50"
+          }`}
+        >
+          <input
+            type="radio"
+            name="leavePayment"
+            value="paid"
+            checked={selectedPayment === "paid"}
+            onChange={(e) => setSelectedPayment(e.target.value)}
+          />
+
+          <div>
+            <p className="font-semibold text-gray-900">
+              Paid Leave
+            </p>
+            <p className="text-sm text-gray-500">
+              Employee will receive salary for this leave.
+            </p>
+          </div>
+        </label>
+
+        {/* Unpaid */}
+        <label
+          className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition ${
+            selectedPayment === "unpaid"
+              ? "border-red-500 bg-red-50"
+              : "border-gray-200 hover:bg-gray-50"
+          }`}
+        >
+          <input
+            type="radio"
+            name="leavePayment"
+            value="unpaid"
+            checked={selectedPayment === "unpaid"}
+            onChange={(e) => setSelectedPayment(e.target.value)}
+          />
+
+          <div>
+            <p className="font-semibold text-gray-900">
+              Unpaid Leave
+            </p>
+            <p className="text-sm text-gray-500">
+              Salary will be deducted for this leave.
+            </p>
+          </div>
+        </label>
+
+      </div>
+
+      <div className="mt-6 flex justify-end gap-3">
+
+        <button
+          onClick={() => {
+            setShowPaymentModal(false);
+            setSelectedLeave(null);
+          }}
+          className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={handleApproveLeave}
+          className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700"
+        >
+          Approve Leave
+        </button>
+
+      </div>
+    </div>
+  </div>
+)}
 
     </div>
   );
