@@ -1544,20 +1544,20 @@ function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/60 px-4 py-8 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+<div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-100 px-4 py-8 sm:px-6 lg:px-8">   
+  <div className="max-w-4xl mx-auto">
         <form onSubmit={handleSubmit} noValidate>
           {/* PROFILE HEADER CARD */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="h-32 sm:h-36 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 relative">
-              <div className="absolute inset-0 bg-black/5" />
-            </div>
+  <div className="h-32 sm:h-36 bg-gradient-to-r from-indigo-700 via-purple-700 to-fuchsia-700 relative">
+  <div className="absolute inset-0 bg-white/5" />
+</div>
 
             <div className="px-5 sm:px-8 pb-6">
               <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-12 sm:-mt-14">
                 <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white p-1.5 shadow-md shrink-0">
                   <div className="w-full h-full rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center">
-                    <span className="text-2xl sm:text-3xl font-bold text-blue-600 tracking-tight">
+                    <span className="text-2xl sm:text-3xl font-bold text-blue-800 tracking-tight">
                       {getInitials()}
                     </span>
                   </div>
