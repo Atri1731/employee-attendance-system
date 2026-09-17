@@ -9,6 +9,17 @@ import {
   Check,
   Download,
 } from "lucide-react";
+
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
 import jsPDF from "jspdf";
 
 function Payroll() {
@@ -139,6 +150,11 @@ function Payroll() {
     (total, item) => total + (item.calculatedSalary || 0),
     0,
   );
+
+  const salaryChartData = payroll.map((item) => ({
+    name: item.employee?.name || "Employee",
+    salary: item.calculatedSalary || 0,
+  }));
 
   const generateSalarySlip = (item) => {
     const doc = new jsPDF();
@@ -384,6 +400,61 @@ function Payroll() {
             </select>
           </div>
         </div>
+      </div>
+
+      {/* Salary Bar Graph */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-800">
+            Employee Salary Overview
+          </h2>
+
+          <p className="text-sm text-gray-500 mt-1">
+            Final salary for {monthName} {year}
+          </p>
+        </div>
+
+        {salaryChartData.length === 0 ? (
+          <div className="h-72 flex items-center justify-center text-gray-500">
+            No salary data available.
+          </div>
+        ) : (
+          <div className="w-full h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={salaryChartData}
+                margin={{
+                  top: 10,
+                  right: 20,
+                  left: 10,
+                  bottom: 10,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+
+                <XAxis dataKey="name" tick={{fontSize: 12}} />
+
+                <YAxis
+                  tick={{fontSize: 12}}
+                  tickFormatter={(value) => `₹${value / 1000}k`}
+                />
+
+                <Tooltip
+                  formatter={(value) => [
+                    `₹${Number(value).toLocaleString("en-IN")}`,
+                    "Final Salary",
+                  ]}
+                />
+
+                <Bar
+                  dataKey="salary"
+                  name="Final Salary"
+                  radius={[6, 6, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </div>
 
       {/* Error */}
