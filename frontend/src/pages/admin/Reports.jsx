@@ -684,23 +684,28 @@ function Reports() {
             </select>
           </div>
 
-          {/* From Date */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              From Date
-            </label>
+         {/* From Date */}
+<div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    From Date
+  </label>
 
-            <input
-              type="date"
-              value={fromDate}
-              onChange={(e) =>
-                setFromDate(
-                  e.target.value
-                )
-              }
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+  <input
+    type="date"
+    value={fromDate}
+    onChange={(e) => {
+      const selectedFromDate = e.target.value;
+
+      if (toDate && selectedFromDate > toDate) {
+        alert("From Date cannot be later than To Date.");
+        return;
+      }
+
+      setFromDate(selectedFromDate);
+    }}
+    className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+  />
+</div>
 
           {/* To Date */}
           <div>
