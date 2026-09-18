@@ -597,10 +597,47 @@ const markAbsent = async (req, res) => {
 // ===============================
 // Admin: Get All Attendance
 // ===============================
+// const getAllAttendance = async (req, res) => {
+//   try {
+//     const attendance = await Attendance.find()
+//       .populate("employee", "employeeId name email department designation")
+//       .sort({date: -1});
+
+//     res.status(200).json({
+//       message: "Attendance fetched successfully",
+//       count: attendance.length,
+//       attendance,
+//     });
+//   } catch (error) {
+//     console.error("Get attendance error:", error);
+
+//     res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// };
+
+
+// ===============================
+// Admin: Get All Attendance
+// ===============================
 const getAllAttendance = async (req, res) => {
   try {
-    const attendance = await Attendance.find()
-      .populate("employee", "employeeId name email department designation")
+    // Get only current employees
+    const employees = await User.find({
+      role: "employee",
+    }).select("_id");
+
+    const employeeIds = employees.map((employee) => employee._id);
+
+    // Get attendance only for current employees
+    const attendance = await Attendance.find({
+      employee: {$in: employeeIds},
+    })
+      .populate(
+        "employee",
+        "employeeId name email department designation"
+      )
       .sort({date: -1});
 
     res.status(200).json({
@@ -616,6 +653,7 @@ const getAllAttendance = async (req, res) => {
     });
   }
 };
+
 
 // ===============================
 // Admin: Get Employee Attendance
@@ -1066,3 +1104,4 @@ module.exports = {
   checkIn,
   checkOut,
 };
+

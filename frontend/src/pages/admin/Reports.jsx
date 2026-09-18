@@ -708,16 +708,21 @@ function Reports() {
               To Date
             </label>
 
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) =>
-                setToDate(
-                  e.target.value
-                )
-              }
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-            />
+           <input
+  type="date"
+  value={toDate}
+  onChange={(e) => {
+    const selectedToDate = e.target.value;
+
+    if (fromDate && selectedToDate < fromDate) {
+      alert("To Date cannot be earlier than From Date.");
+      return;
+    }
+
+    setToDate(selectedToDate);
+  }}
+  className="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+/>
           </div>
 
         </div>

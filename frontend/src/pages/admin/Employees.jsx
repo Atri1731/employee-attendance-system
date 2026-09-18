@@ -5,13 +5,13 @@ import {useNavigate} from "react-router-dom";
 const Employees = () => {
   const navigate = useNavigate();
 
-const [showDetailsModal, setShowDetailsModal] = useState(false);
-const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("");
-const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -25,12 +25,13 @@ const [statusFilter, setStatusFilter] = useState("");
       const token = sessionStorage.getItem("token");
 
       const response = await fetch(
-  `${import.meta.env.VITE_API_URL}/departments`,
-  {
-        headers: {
-          Authorization: `Bearer ${token}`,
+        `${import.meta.env.VITE_API_URL}/departments`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       const data = await response.json();
 
@@ -64,14 +65,15 @@ const [statusFilter, setStatusFilter] = useState("");
       // const token = localStorage.getItem("token");
       const token = sessionStorage.getItem("token");
 
-     const response = await fetch(
-  `${import.meta.env.VITE_API_URL}/employees`,
-  {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/employees`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       const data = await response.json();
 
@@ -94,30 +96,23 @@ const [statusFilter, setStatusFilter] = useState("");
   }, []);
 
   // Search
- const filteredEmployees = employees.filter((employee) => {
-  const searchText = search.toLowerCase();
+  const filteredEmployees = employees.filter((employee) => {
+    const searchText = search.toLowerCase();
 
-  const matchesSearch =
-    employee.name?.toLowerCase().includes(searchText) ||
-    employee.employeeId?.toLowerCase().includes(searchText) ||
-    employee.email?.toLowerCase().includes(searchText) ||
-    employee.department?.toLowerCase().includes(searchText) ||
-    employee.designation?.toLowerCase().includes(searchText);
+    const matchesSearch =
+      employee.name?.toLowerCase().includes(searchText) ||
+      employee.employeeId?.toLowerCase().includes(searchText) ||
+      employee.email?.toLowerCase().includes(searchText) ||
+      employee.department?.toLowerCase().includes(searchText) ||
+      employee.designation?.toLowerCase().includes(searchText);
 
-  const matchesDepartment =
-    !departmentFilter ||
-    employee.department === departmentFilter;
+    const matchesDepartment =
+      !departmentFilter || employee.department === departmentFilter;
 
-  const matchesStatus =
-    !statusFilter ||
-    employee.status === statusFilter;
+    const matchesStatus = !statusFilter || employee.status === statusFilter;
 
-  return (
-    matchesSearch &&
-    matchesDepartment &&
-    matchesStatus
-  );
-});
+    return matchesSearch && matchesDepartment && matchesStatus;
+  });
 
   // =========================
   // EDIT EMPLOYEE
@@ -155,14 +150,14 @@ const [statusFilter, setStatusFilter] = useState("");
       const url = `${import.meta.env.VITE_API_URL}/employees/${editingEmployee._id}`;
 
       // console.log("UPDATE URL:", url);
-
-      const body = {
-        name: editingEmployee.name,
-        phone: editingEmployee.phone,
-        department: editingEmployee.department,
-        designation: editingEmployee.designation,
-        status: editingEmployee.status,
-      };
+const body = {
+  name: editingEmployee.name,
+  phone: editingEmployee.phone,
+  department: editingEmployee.department,
+  designation: editingEmployee.designation,
+  salary: Number(editingEmployee.salary) || 0,
+  status: editingEmployee.status,
+};
 
       // console.log("UPDATE BODY:", body);
 
@@ -227,11 +222,10 @@ const [statusFilter, setStatusFilter] = useState("");
       const token = sessionStorage.getItem("token");
 
       const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/employees/${employeeId}`,
+        `${import.meta.env.VITE_API_URL}/employees/${employeeId}`,
         {
           method: "DELETE",
 
-          
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -276,57 +270,52 @@ const [statusFilter, setStatusFilter] = useState("");
       </div>
 
       {/* Search */}
-    {/* Search & Filters */}
-<div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Search & Filters */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Search */}
+          <div className="relative">
+            <Search
+              size={20}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            />
 
-    {/* Search */}
-    <div className="relative">
-      <Search
-        size={20}
-        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-      />
+            <input
+              type="text"
+              placeholder="Search employees..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
 
-      <input
-        type="text"
-        placeholder="Search employees..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
+          {/* Department Filter */}
+          <select
+            value={departmentFilter}
+            onChange={(e) => setDepartmentFilter(e.target.value)}
+            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">All Departments</option>
 
-    {/* Department Filter */}
-    <select
-      value={departmentFilter}
-      onChange={(e) => setDepartmentFilter(e.target.value)}
-      className="w-full border border-gray-200 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
-    >
-      <option value="">All Departments</option>
+            {departments.map((department) => (
+              <option key={department._id} value={department.name}>
+                {department.name}
+              </option>
+            ))}
+          </select>
 
-      {departments.map((department) => (
-        <option
-          key={department._id}
-          value={department.name}
-        >
-          {department.name}
-        </option>
-      ))}
-    </select>
-
-    {/* Status Filter */}
-    <select
-      value={statusFilter}
-      onChange={(e) => setStatusFilter(e.target.value)}
-      className="w-full border border-gray-200 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
-    >
-      <option value="">All Status</option>
-      <option value="active">Active</option>
-      <option value="inactive">Inactive</option>
-    </select>
-
-  </div>
-</div>
+          {/* Status Filter */}
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
 
       {/* Loading */}
       {loading && (
@@ -380,13 +369,17 @@ const [statusFilter, setStatusFilter] = useState("");
                       Designation
                     </th>
 
-                    <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">
-                      Joining Date
-                    </th>
+       <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">
+  Joining Date
+</th>
 
-                    <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">
-                      Status
-                    </th>
+<th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">
+  Salary
+</th>
+
+<th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">
+  Status
+</th>
 
                     <th className="text-center px-6 py-4 text-sm font-semibold text-gray-600">
                       Actions
@@ -403,15 +396,15 @@ const [statusFilter, setStatusFilter] = useState("");
                       <td className="px-6 py-4">
                         <div>
                           <button
-  type="button"
-  onClick={() => {
-    setSelectedEmployee(employee);
-    setShowDetailsModal(true);
-  }}
-  className="font-semibold text-blue-600 hover:text-blue-800 hover:underline text-left"
->
-  {employee.name}
-</button>
+                            type="button"
+                            onClick={() => {
+                              setSelectedEmployee(employee);
+                              setShowDetailsModal(true);
+                            }}
+                            className="font-semibold text-blue-600 hover:text-blue-800 hover:underline text-left"
+                          >
+                            {employee.name}
+                          </button>
 
                           <p className="text-sm text-gray-400">
                             {employee.employeeId}
@@ -431,10 +424,18 @@ const [statusFilter, setStatusFilter] = useState("");
                         {employee.designation || "—"}
                       </td>
                       <td className="px-6 py-4 text-gray-600">
-  {employee.joiningDate
-    ? new Date(employee.joiningDate).toLocaleDateString("en-GB")
-    : "—"}
-</td>
+                        {employee.joiningDate
+                          ? new Date(employee.joiningDate).toLocaleDateString(
+                              "en-GB",
+                            )
+                          : "—"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="font-semibold text-gray-800">
+                          ₹
+                          {Number(employee.salary || 0).toLocaleString("en-IN")}
+                        </span>
+                      </td>
 
                       <td className="px-6 py-4">
                         <span
@@ -484,8 +485,8 @@ const [statusFilter, setStatusFilter] = useState("");
       {/* ========================= */}
 
       {showEditModal && editingEmployee && (
-       <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-  <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b">
               <div>
@@ -511,7 +512,10 @@ const [statusFilter, setStatusFilter] = useState("");
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleUpdateEmployee} className="p-6">
+           <form
+  onSubmit={handleUpdateEmployee}
+  className="p-6 overflow-y-auto flex-1"
+>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Name */}
                 <div>
@@ -584,6 +588,28 @@ const [statusFilter, setStatusFilter] = useState("");
                     className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
+                {/* Salary */}
+<div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    Monthly Salary
+  </label>
+
+  <div className="relative">
+    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+      ₹
+    </span>
+
+    <input
+      type="number"
+      name="salary"
+      value={editingEmployee.salary || ""}
+      onChange={handleEditChange}
+      min="0"
+      placeholder="Enter monthly salary"
+      className="w-full border border-gray-300 rounded-lg pl-8 pr-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
+    />
+  </div>
+</div>
 
                 {/* Status */}
                 <div>
@@ -629,145 +655,139 @@ const [statusFilter, setStatusFilter] = useState("");
         </div>
       )}
       {/* ========================= */}
-{/* EMPLOYEE DETAILS MODAL */}
-{/* ========================= */}
+      {/* EMPLOYEE DETAILS MODAL */}
+      {/* ========================= */}
 
-{showDetailsModal && selectedEmployee && (
-  <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-    <div className="bg-white rounded-xl shadow-xl w-full max-w-lg">
+      {showDetailsModal && selectedEmployee && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+<div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col">            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b">
+              <div>
+                <h2 className="text-xl font-bold text-gray-800">
+                  Employee Details
+                </h2>
 
-      {/* Modal Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b">
-        <div>
-          <h2 className="text-xl font-bold text-gray-800">
-            Employee Details
-          </h2>
+                <p className="text-sm text-gray-500 mt-1">
+                  View employee information
+                </p>
+              </div>
 
-          <p className="text-sm text-gray-500 mt-1">
-            View employee information
-          </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowDetailsModal(false);
+                  setSelectedEmployee(null);
+                }}
+                className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Employee Details */}
+            <div className="p-6 overflow-y-auto flex-1">
+              {/* Employee Name */}
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl font-bold">
+                  {selectedEmployee.name?.charAt(0).toUpperCase()}
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-gray-800">
+                    {selectedEmployee.name}
+                  </h3>
+
+                  <p className="text-sm text-gray-500">
+                    {selectedEmployee.employeeId}
+                  </p>
+                </div>
+              </div>
+
+              {/* Details Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500 mb-1">Email</p>
+                  <p className="font-medium text-gray-800 break-all">
+                    {selectedEmployee.email || "—"}
+                  </p>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500 mb-1">Phone</p>
+                  <p className="font-medium text-gray-800">
+                    {selectedEmployee.phone || "—"}
+                  </p>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500 mb-1">Department</p>
+                  <p className="font-medium text-gray-800">
+                    {selectedEmployee.department || "—"}
+                  </p>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500 mb-1">Designation</p>
+                  <p className="font-medium text-gray-800">
+                    {selectedEmployee.designation || "—"}
+                  </p>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500 mb-1">Joining Date</p>
+                  <p className="font-medium text-gray-800">
+                    {selectedEmployee.joiningDate
+                      ? new Date(
+                          selectedEmployee.joiningDate,
+                        ).toLocaleDateString("en-GB")
+                      : "—"}
+                  </p>
+                </div>
+
+{/* Monthly Salary */}
+<div className="bg-gray-50 rounded-lg p-3">
+  <p className="text-xs text-gray-500 mb-1">
+    Monthly Salary
+  </p>
+
+  <p className="font-semibold text-gray-800">
+    ₹{Number(selectedEmployee.salary || 0).toLocaleString("en-IN")}
+  </p>
+</div>
+
+
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-xs text-gray-500 mb-1">Status</p>
+
+                  <span
+                    className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
+                      selectedEmployee.status === "active"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    {selectedEmployee.status}
+                  </span>
+                </div>
+              </div>
+
+              {/* Close Button */}
+              <div className="flex justify-end mt-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowDetailsModal(false);
+                    setSelectedEmployee(null);
+                  }}
+                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <button
-          type="button"
-          onClick={() => {
-            setShowDetailsModal(false);
-            setSelectedEmployee(null);
-          }}
-          className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg"
-        >
-          <X size={20} />
-        </button>
-      </div>
-
-      {/* Employee Details */}
-      <div className="p-6 overflow-y-auto">
-
-        {/* Employee Name */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl font-bold">
-            {selectedEmployee.name?.charAt(0).toUpperCase()}
-          </div>
-
-          <div>
-            <h3 className="text-lg font-bold text-gray-800">
-              {selectedEmployee.name}
-            </h3>
-
-            <p className="text-sm text-gray-500">
-              {selectedEmployee.employeeId}
-            </p>
-          </div>
-        </div>
-
-        {/* Details Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-
-          <div className="bg-gray-50 rounded-lg p-3">
-            <p className="text-xs text-gray-500 mb-1">
-              Email
-            </p>
-            <p className="font-medium text-gray-800 break-all">
-              {selectedEmployee.email || "—"}
-            </p>
-          </div>
-
-          <div className="bg-gray-50 rounded-lg p-3">
-            <p className="text-xs text-gray-500 mb-1">
-              Phone
-            </p>
-            <p className="font-medium text-gray-800">
-              {selectedEmployee.phone || "—"}
-            </p>
-          </div>
-
-          <div className="bg-gray-50 rounded-lg p-3">
-            <p className="text-xs text-gray-500 mb-1">
-              Department
-            </p>
-            <p className="font-medium text-gray-800">
-              {selectedEmployee.department || "—"}
-            </p>
-          </div>
-
-          <div className="bg-gray-50 rounded-lg p-3">
-            <p className="text-xs text-gray-500 mb-1">
-              Designation
-            </p>
-            <p className="font-medium text-gray-800">
-              {selectedEmployee.designation || "—"}
-            </p>
-          </div>
-
-          <div className="bg-gray-50 rounded-lg p-3">
-            <p className="text-xs text-gray-500 mb-1">
-              Joining Date
-            </p>
-            <p className="font-medium text-gray-800">
-              {selectedEmployee.joiningDate
-                ? new Date(
-                    selectedEmployee.joiningDate
-                  ).toLocaleDateString("en-GB")
-                : "—"}
-            </p>
-          </div>
-
-          <div className="bg-gray-50 rounded-lg p-3">
-            <p className="text-xs text-gray-500 mb-1">
-              Status
-            </p>
-
-            <span
-              className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                selectedEmployee.status === "active"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              {selectedEmployee.status}
-            </span>
-          </div>
-
-        </div>
-
-        {/* Close Button */}
-        <div className="flex justify-end mt-6">
-          <button
-            type="button"
-            onClick={() => {
-              setShowDetailsModal(false);
-              setSelectedEmployee(null);
-            }}
-            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold"
-          >
-            Close
-          </button>
-        </div>
-
-      </div>
-    </div>
-  </div>
-)}
+      )}
     </div>
   );
 };

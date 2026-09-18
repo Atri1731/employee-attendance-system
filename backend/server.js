@@ -38,6 +38,7 @@ connectDB();
 // );
 const allowedOrigins = [
   "http://localhost:5173",
+  "http://localhost:5174",
   "https://employee-attendance-system-one-rosy.vercel.app",
 ];
 

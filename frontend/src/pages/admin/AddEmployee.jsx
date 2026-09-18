@@ -194,6 +194,7 @@ function AddEmployee() {
     department: "",
     designation: "",
     joiningDate: "",
+    // salary: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -287,6 +288,7 @@ function AddEmployee() {
         department: "",
         designation: "",
         joiningDate: "",
+        salary: "",
       });
     } catch (error) {
       console.error("Add employee error:", error);
@@ -455,6 +457,30 @@ function AddEmployee() {
                 required
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Monthly Salary
+              </label>
+
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                  ₹
+                </span>
+
+                <input
+                  type="number"
+                  name="salary"
+                  value={formData.salary}
+                  onChange={handleChange}
+                  placeholder="Enter monthly salary"
+                  min="0"
+                  className="w-full pl-8 pr-4 py-2.5 border border-gray-300 rounded-lg
+                 focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                 outline-none"
+                />
+              </div>
             </div>
           </div>
 

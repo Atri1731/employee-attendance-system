@@ -1,4 +1,3 @@
-
 // import { useEffect, useState } from "react";
 
 // function Profile() {
@@ -296,10 +295,6 @@
 // }
 
 // export default Profile;
-
-
-
-
 
 // import { useEffect, useRef, useState } from "react";
 // import {
@@ -785,8 +780,6 @@
 //     <div className="min-h-screen bg-blue-50 px-4 py-6 sm:px-6 lg:px-8">
 //       <div className="max-w-5xl mx-auto">
 
-    
-
 //         {/* ================================================= */}
 //         {/* SOCIAL STYLE PROFILE CARD */}
 //         {/* ================================================= */}
@@ -799,7 +792,7 @@
 //             <div className="absolute inset-0 bg-white/5"></div>
 
 //             <div className="absolute top-5 right-5">
-              
+
 //             </div>
 //           </div>
 
@@ -1149,7 +1142,7 @@
 
 // export default Profile;
 
-import { useEffect, useRef, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import {
   User,
   Mail,
@@ -1188,9 +1181,7 @@ const InfoField = ({
   return (
     <div ref={fieldRef} className="scroll-mt-24">
       <div className="flex items-center justify-between mb-1.5">
-        <label className="text-sm font-semibold text-slate-700">
-          {label}
-        </label>
+        <label className="text-sm font-semibold text-slate-700">{label}</label>
 
         {!editable && (
           <span className="flex items-center gap-1 text-xs text-slate-400 font-medium">
@@ -1323,7 +1314,7 @@ function Profile() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -1357,7 +1348,7 @@ function Profile() {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const {name, value} = e.target;
 
     setFormData((prev) => ({
       ...prev,
@@ -1416,19 +1407,28 @@ function Profile() {
 
     // Focus & scroll to first broken field
     if (newErrors.name) {
-      nameFieldRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      nameFieldRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
       nameInputRef.current?.focus();
       return false;
     }
 
     if (newErrors.email) {
-      emailFieldRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      emailFieldRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
       emailInputRef.current?.focus();
       return false;
     }
 
     if (newErrors.phone) {
-      phoneFieldRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      phoneFieldRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
       phoneInputRef.current?.focus();
       return false;
     }
@@ -1482,7 +1482,7 @@ function Profile() {
             email: formData.email.trim(),
             phone: formData.phone.trim(),
           }),
-        }
+        },
       );
 
       const data = await response.json();
@@ -1544,14 +1544,14 @@ function Profile() {
   }
 
   return (
-<div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-100 px-4 py-8 sm:px-6 lg:px-8">   
-  <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-100 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
         <form onSubmit={handleSubmit} noValidate>
           {/* PROFILE HEADER CARD */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-  <div className="h-32 sm:h-36 bg-gradient-to-r from-indigo-700 via-purple-700 to-fuchsia-700 relative">
-  <div className="absolute inset-0 bg-white/5" />
-</div>
+            <div className="h-32 sm:h-36 bg-gradient-to-r from-indigo-700 via-purple-700 to-fuchsia-700 relative">
+              <div className="absolute inset-0 bg-white/5" />
+            </div>
 
             <div className="px-5 sm:px-8 pb-6">
               <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-12 sm:-mt-14">
@@ -1569,10 +1569,7 @@ function Profile() {
                     <h1 className="text-xl sm:text-2xl font-bold text-slate-800 truncate">
                       {formData.name || "Employee Profile"}
                     </h1>
-                    <BadgeCheck
-                      size={20}
-                      className="text-blue-600 shrink-0"
-                    />
+                    <BadgeCheck size={20} className="text-blue-600 shrink-0" />
                   </div>
                   <p className="text-slate-500 text-sm font-medium mt-0.5">
                     {formData.designation || "Team Member"}
@@ -1666,7 +1663,8 @@ function Profile() {
                 Personal & Job Details
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">
-                Key identity and organizational parameters linked to your account.
+                Key identity and organizational parameters linked to your
+                account.
               </p>
             </div>
 
@@ -1732,7 +1730,8 @@ function Profile() {
                       Editing Mode Active
                     </h3>
                     <p className="text-xs text-slate-500">
-                      Modifiable fields are unlocked. Click save once you are done.
+                      Modifiable fields are unlocked. Click save once you are
+                      done.
                     </p>
                   </div>
                 </div>
@@ -1788,7 +1787,9 @@ function Profile() {
                   Protected Employee Records
                 </p>
                 <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                  Employee ID, department, designation, and joining date are managed centrally by the HR administration system and cannot be directly modified.
+                  Employee ID, department, designation, and joining date are
+                  managed centrally by the HR administration system and cannot
+                  be directly modified.
                 </p>
               </div>
             </div>

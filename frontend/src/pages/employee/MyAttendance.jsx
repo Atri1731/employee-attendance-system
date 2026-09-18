@@ -220,12 +220,21 @@ function MyAttendance() {
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               />
 
-              <input
-                type="date"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-              />
+             <input
+  type="date"
+  value={toDate}
+  onChange={(e) => {
+    const selectedToDate = e.target.value;
+
+    if (fromDate && selectedToDate < fromDate) {
+      alert("To Date cannot be earlier than From Date.");
+      return;
+    }
+
+    setToDate(selectedToDate);
+  }}
+  className="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+/>
             </div>
           </div>
         </div>
