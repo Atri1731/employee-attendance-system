@@ -7,6 +7,7 @@ import Sidebar from "../components/Sidebar";
 import NotificationBell from "../components/NotificationBell";
 
 function EmployeeLayout() {
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (

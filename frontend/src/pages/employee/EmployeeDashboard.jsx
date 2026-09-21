@@ -31,11 +31,14 @@ function EmployeeDashboard() {
       // const token = localStorage.getItem("token");
       const token = sessionStorage.getItem("token");
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/attendance/my`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/attendance/my`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       const data = await response.json();
 
@@ -52,7 +55,6 @@ function EmployeeDashboard() {
       const percentage =
         totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0;
 
-      
       setAttendanceStats({
         present: presentDays,
         absent: absentDays,
@@ -79,47 +81,49 @@ function EmployeeDashboard() {
     }
   };
   const fetchLeaveBalance = async () => {
-        try {
-          // const token = localStorage.getItem("token");
-          const token = sessionStorage.getItem("token");
+    try {
+      // const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
-          const response = await fetch(`${import.meta.env.VITE_API_URL}/leaves/my`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/leaves/my`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
-          const data = await response.json();
+      const data = await response.json();
 
-          if (!response.ok) {
-            throw new Error(data.message || "Failed to fetch leaves");
-          }
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch leaves");
+      }
 
-          const approvedLeaves = (data.leaves || []).filter(
-            (leave) => leave.status === "approved",
-          );
+      const approvedLeaves = (data.leaves || []).filter(
+        (leave) => leave.status === "approved",
+      );
 
-          let usedDays = 0;
+      let usedDays = 0;
 
-          approvedLeaves.forEach((leave) => {
-            const from = new Date(leave.fromDate);
-            const to = new Date(leave.toDate);
+      approvedLeaves.forEach((leave) => {
+        const from = new Date(leave.fromDate);
+        const to = new Date(leave.toDate);
 
-            const difference =
-              Math.floor((to - from) / (1000 * 60 * 60 * 24)) + 1;
+        const difference = Math.floor((to - from) / (1000 * 60 * 60 * 24)) + 1;
 
-            usedDays += difference;
-          });
+        usedDays += difference;
+      });
 
-          const totalLeave = 12;
+      const totalLeave = 12;
 
-          const remainingLeave = Math.max(totalLeave - usedDays, 0);
+      const remainingLeave = Math.max(totalLeave - usedDays, 0);
 
-          setLeaveBalance(remainingLeave);
-        } catch (error) {
-          console.error("Fetch leave balance error:", error);
-        }
-      };
+      setLeaveBalance(remainingLeave);
+    } catch (error) {
+      console.error("Fetch leave balance error:", error);
+    }
+  };
 
   const stats = [
     {
@@ -163,7 +167,7 @@ function EmployeeDashboard() {
       const token = sessionStorage.getItem("token");
 
       const response = await fetch(
-       `${import.meta.env.VITE_API_URL}/attendance/check-in`,
+        `${import.meta.env.VITE_API_URL}/attendance/check-in`,
         {
           method: "POST",
           headers: {
@@ -194,8 +198,7 @@ function EmployeeDashboard() {
     try {
       setLoading(true);
 
-      const token = localStorage.getItem("token");
-
+      const token = sessionStorage.getItem("token");
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/attendance/check-out`,
         {

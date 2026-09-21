@@ -14,6 +14,8 @@ import {
 import {NavLink, useNavigate} from "react-router-dom";
 
 function Sidebar({role}) {
+  const user = JSON.parse(sessionStorage.getItem("user"));
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -87,11 +89,7 @@ function Sidebar({role}) {
       path: "/employee/myleaves",
       icon: FileText,
     },
-    // {
-    //   name: "My Salary",
-    //   path: "/employee/salary",
-    //   icon: Wallet,
-    // },
+
     {
   name: "My Salary",
   path: "/employee/salary",
@@ -114,11 +112,29 @@ function Sidebar({role}) {
   return (
     <aside className="w-64 h-screen fixed left-0 top-0 !bg-gray-100 border-r border-gray-300 flex flex-col shrink-0 z-50">
       {/* Logo */}
-      <div className="px-6 py-5 border-b border-gray-300 !bg-gray-100">
-        <h1 className="text-xl font-bold text-blue-600">Employee Attendance</h1>
+      <div className="border-b border-gray-200 px-6 py-5">
+  <h1 className="text-xl font-bold text-blue-600">
+    Employee Attendance
+  </h1>
 
-        <p className="text-sm text-gray-500 mt-1 capitalize">{role} Panel</p>
-      </div>
+  {role === "employee" && (
+    <div className="mt-2">
+      <p className="text-base font-semibold text-gray-800">
+        {user?.name || "Employee"}
+      </p>
+
+      <p className="text-sm text-gray-500">
+        {user?.employeeId || "Employee"}
+      </p>
+    </div>
+  )}
+
+  {role === "admin" && (
+    <p className="text-sm text-gray-500 mt-1">
+      Admin Panel
+    </p>
+  )}
+</div>
 
       {/* Menu */}
       <nav className="flex-1 p-4 !bg-gray-100">
