@@ -287,27 +287,27 @@ const checkIn = async (req, res) => {
     // Get current time in India
     const checkInTime = getCurrentTimeIST();
 
-    // // Default checkout time
-    // const defaultCheckOut = "18:00";
+    // Default checkout time
+    const defaultCheckOut = "18:00";
 
-    // // Create attendance
-    // const attendance = await Attendance.create({
-    //   employee: employeeId,
-    //   date: startOfDay,
-    //   status: "present",
-    //   checkIn: checkInTime,
-    //   checkOut: defaultCheckOut,
-    //   remarks: "",
-    // });
+    // Create attendance
+    const attendance = await Attendance.create({
+      employee: employeeId,
+      date: startOfDay,
+      status: "present",
+      checkIn: checkInTime,
+      checkOut: defaultCheckOut,
+      remarks: "",
+    });
 
-const attendance = await Attendance.create({
-  employee: employeeId,
-  date: startOfDay,
-  status: "present",
-  checkIn: checkInTime,
-  checkOut: null,
-  remarks: "",
-});
+// const attendance = await Attendance.create({
+//   employee: employeeId,
+//   date: startOfDay,
+//   status: "present",
+//   checkIn: checkInTime,
+//   checkOut: null,
+//   remarks: "",
+// });
 
     const populatedAttendance = await Attendance.findById(
       attendance._id,
@@ -432,12 +432,16 @@ const checkOut = async (req, res) => {
     //   });
     // }
 
-    if (attendance.checkOut) {
+//     if (attendance.checkOut) {
+//   return res.status(400).json({
+//     message: "You have already checked out today",
+//   });
+// }
+if (attendance.checkOut && attendance.checkOut !== "18:00") {
   return res.status(400).json({
     message: "You have already checked out today",
   });
 }
-
 
 
     // Save actual checkout time
@@ -468,45 +472,45 @@ const checkOut = async (req, res) => {
 // ===============================
 // Auto Checkout at 6:00 PM IST
 // ===============================
-const autoCheckoutIfNeeded = async (attendance) => {
-  if (!attendance) return attendance;
+// const autoCheckoutIfNeeded = async (attendance) => {
+//   if (!attendance) return attendance;
 
-  // If employee never checked in, do nothing
-  if (!attendance.checkIn) {
-    return attendance;
-  }
+//   // If employee never checked in, do nothing
+//   if (!attendance.checkIn) {
+//     return attendance;
+//   }
 
-  // If employee already checked out, do nothing
-  if (attendance.checkOut) {
-    return attendance;
-  }
+//   // If employee already checked out, do nothing
+//   if (attendance.checkOut) {
+//     return attendance;
+//   }
 
-  const now = new Date();
+//   const now = new Date();
 
-  const currentTime = new Intl.DateTimeFormat("en-IN", {
-    timeZone: TIME_ZONE,
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).format(now);
+//   const currentTime = new Intl.DateTimeFormat("en-IN", {
+//     timeZone: TIME_ZONE,
+//     hour: "2-digit",
+//     minute: "2-digit",
+//     hour12: false,
+//   }).format(now);
 
-  // Convert current time to minutes
-  const [hours, minutes] = currentTime.split(":").map(Number);
+//   // Convert current time to minutes
+//   const [hours, minutes] = currentTime.split(":").map(Number);
 
-  const currentMinutes = hours * 60 + minutes;
+//   const currentMinutes = hours * 60 + minutes;
 
-  // 6:00 PM = 18:00 = 1080 minutes
-  const sixPM = 18 * 60;
+//   // 6:00 PM = 18:00 = 1080 minutes
+//   const sixPM = 18 * 60;
 
-  // Only auto checkout after 6 PM
-  if (currentMinutes >= sixPM) {
-    attendance.checkOut = "18:00";
+//   // Only auto checkout after 6 PM
+//   if (currentMinutes >= sixPM) {
+//     attendance.checkOut = "18:00";
 
-    await attendance.save();
-  }
+//     await attendance.save();
+//   }
 
-  return attendance;
-};
+//   return attendance;
+// };
 
 // ===============================
 // Employee: Get My Attendance

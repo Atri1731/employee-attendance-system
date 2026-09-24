@@ -313,8 +313,14 @@ function EmployeeDashboard() {
 
               <button
                 onClick={handleCheckOut}
+                // disabled={
+                //   loading || !attendance?.checkIn || attendance?.checkOut
+                // }
+
                 disabled={
-                  loading || !attendance?.checkIn || attendance?.checkOut
+                  loading ||
+                  !attendance?.checkIn ||
+                  (attendance?.checkOut && attendance?.checkOut !== "18:00")
                 }
                 className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition ${
                   !attendance?.checkIn || attendance?.checkOut
