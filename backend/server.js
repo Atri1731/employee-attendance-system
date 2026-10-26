@@ -26,18 +26,7 @@ connectDB();
 
 
 
-// app.use(
-//   cors({
-//     origin: [
-//       "http://localhost:5173",
-//       "https://employee-attendance-system-667rguo14-atri-patel-s-projects.vercel.app",
-//       "https://employee-attendance-system-b0327ctyl-atri-patel-s-projects.vercel.app",
-//       "https://employee-attendance-system-one-rosy.vercel.app",
-//     ],
-//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//   }),
-// );
+
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",

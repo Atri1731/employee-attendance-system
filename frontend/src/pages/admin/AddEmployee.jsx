@@ -183,6 +183,7 @@
 // export default AddEmployee;
 
 import {useEffect, useState} from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 function AddEmployee() {
   const [formData, setFormData] = useState({
@@ -196,6 +197,9 @@ function AddEmployee() {
     joiningDate: "",
     // salary: "",
   });
+
+const [showPassword, setShowPassword] = useState(false);
+
 
   const [loading, setLoading] = useState(false);
 
@@ -270,7 +274,8 @@ function AddEmployee() {
         },
       );
 
-      const data = await response.json();
+     
+const data = await response.json();
 
       if (!response.ok) {
         throw new Error(data.message || "Failed to add employee");
@@ -365,23 +370,37 @@ function AddEmployee() {
               />
             </div>
 
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
+{/* Password */}
+<div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    Password
+  </label>
 
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Create password"
-                required
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+  <div className="relative">
+    <input
+      type={showPassword ? "text" : "password"}
+      name="password"
+      value={formData.password}
+      onChange={handleChange}
+      placeholder="Enter password"
+      required
+      className="w-full border border-gray-300 rounded-lg pl-4 pr-12 py-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+    />
 
+    <button
+      type="button"
+      onClick={() => setShowPassword((prev) => !prev)}
+      aria-label={showPassword ? "Hide password" : "Show password"}
+      className="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors"
+    >
+      {showPassword ? (
+        <Eye size={20} strokeWidth={1.8} />
+      ) : (
+        <EyeOff size={20} strokeWidth={1.8} />
+      )}
+    </button>
+  </div>
+</div>
             {/* Phone */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">

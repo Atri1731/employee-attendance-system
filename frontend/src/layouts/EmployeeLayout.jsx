@@ -1,40 +1,33 @@
+import {useState} from "react";
+import {Outlet} from "react-router-dom";
+import {Menu, X} from "lucide-react";
 
-
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import Sidebar from "../components/Sidebar";
-import NotificationBell from "../components/NotificationBell";
+import Sidebar from "../components/Sidebar.jsx";
+import NotificationBell from "../components/NotificationBell.jsx";
 
 function EmployeeLayout() {
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  // const user = JSON.parse(sessionStorage.getItem("user"));
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Mobile Header */}
+      <div className="md:hidden flex items-center justify-between bg-white px-4 py-3 border-b border-gray-200 sticky top-0 z-40">
+        <h1 className="text-lg font-bold text-blue-600">Employee Attendance</h1>
 
-     {/* Mobile Header */}
-<div className="md:hidden flex items-center justify-between bg-white px-4 py-3 border-b border-gray-200 sticky top-0 z-40">
+        <div className="flex items-center gap-2">
+          <NotificationBell />
 
-  <h1 className="text-lg font-bold text-blue-600">
-    Employee Attendance
-  </h1>
-
-  <div className="flex items-center gap-2">
-    <NotificationBell />
-
-    <button
-      onClick={() => setSidebarOpen(true)}
-      className="p-2 rounded-lg text-gray-700 hover:bg-gray-100"
-    >
-      <Menu size={24} />
-    </button>
-  </div>
-
-</div>
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            <Menu size={24} />
+          </button>
+        </div>
+      </div>
 
       <div className="flex min-h-screen">
-
         {/* Desktop Sidebar */}
         <div className="hidden md:block shrink-0">
           <Sidebar role="employee" />
@@ -43,7 +36,6 @@ function EmployeeLayout() {
         {/* Mobile Sidebar */}
         {sidebarOpen && (
           <div className="fixed inset-0 z-50 md:hidden">
-
             {/* Overlay */}
             <div
               className="absolute inset-0 bg-black/40"
@@ -52,7 +44,6 @@ function EmployeeLayout() {
 
             {/* Sidebar */}
             <div className="relative w-64 h-full bg-white shadow-xl">
-
               <button
                 onClick={() => setSidebarOpen(false)}
                 className="absolute top-4 right-4 z-10 p-1 rounded-lg bg-white text-gray-600 hover:bg-gray-100"
@@ -61,23 +52,19 @@ function EmployeeLayout() {
               </button>
 
               <Sidebar role="employee" />
-
             </div>
           </div>
         )}
 
-      {/* Main Content */}
-<main className="flex-1 min-w-0 w-full overflow-x-hidden md:ml-64">
+        {/* Main Content */}
+        <main className="flex-1 min-w-0 w-full overflow-x-hidden md:ml-64">
+          {/* Desktop Top Header */}
+          <div className="hidden md:flex h-16 bg-white border-b border-gray-200 items-center justify-end px-6 sticky top-0 z-30">
+            <NotificationBell />
+          </div>
 
-  {/* Desktop Top Header */}
-  <div className="hidden md:flex h-16 bg-white border-b border-gray-200 items-center justify-end px-6 sticky top-0 z-30">
-    <NotificationBell />
-  </div>
-
-  <Outlet />
-
-</main>
-
+          <Outlet />
+        </main>
       </div>
     </div>
   );

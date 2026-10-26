@@ -5,7 +5,7 @@ import EmployeeLayout from "./layouts/EmployeeLayout";
 
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 
-import Signup from "./pages/Signup";
+// import Signup from "./pages/Signup";
 
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -21,6 +21,7 @@ import Reports from "./pages/admin/Reports";
 import Departments from "./pages/admin/Departments";
 import Holidays from "./pages/admin/Holidays";
 import Payroll from "./pages/admin/Payroll";
+import AdminManagement from "./pages/admin/AdminManagement";
 
 // Employee Pages
 import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
@@ -38,7 +39,7 @@ function App() {
         {/* Login */}
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        {/* <Route path="/signup" element={<Signup />} /> */}
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/notifications" element={<Notifications />} />
@@ -61,6 +62,7 @@ function App() {
           <Route path="departments" element={<Departments />} />
           <Route path="salary" element={<Payroll />} />
           <Route path="holidays" element={<Holidays />} />
+          <Route path="admin-management" element={<AdminManagement />} />
         </Route>
 
         {/* ================= EMPLOYEE ================= */}
